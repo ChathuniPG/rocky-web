@@ -2,16 +2,17 @@
 
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { Suspense, type ReactNode } from "react";
+import { Suspense, useMemo, type ReactNode } from "react";
 
 import { ThemeToggle } from "@/components/theme-toggle";
 import { Badge } from "@/components/ui/badge";
 import { Dialog, DialogTrigger } from "@/components/ui/dialog";
 import { Tooltip, TooltipContent, TooltipTrigger } from "@/components/ui/tooltip";
+import { useCurrentUser } from "@/features/auth/auth-provider";
 import { CreatePostDialogContent } from "@/features/posts/create-post-dialog-content";
 import { useTranslations } from "@/i18n/i18n-provider";
 
-import { isNavItemActive, navItems, type NavItem } from "./nav-items";
+import { getNavItems, isNavItemActive, type NavItem } from "./nav-items";
 
 // Shared by links and the Post button so every entry has the same hover, press,
 // focus and active states (FR-UI-02). Purple marks the current page (design.md 7.4).
@@ -37,9 +38,12 @@ type SidebarProps = {
  * labels from 1280px. The nav list sits in Suspense because `usePathname`
  * suspends while prerendering routes with unknown dynamic params under
  * cacheComponents; the fallback is the same list without the active highlight.
+ * Rendered inside the AuthGate, so the signed-in user is always known.
  */
 export function Sidebar({ unreadNotificationCount = 0 }: SidebarProps) {
   const t = useTranslations();
+  const { username } = useCurrentUser();
+  const navItems = useMemo(() => getNavItems(username), [username]);
 
   return (
     <aside className="sticky top-0 flex h-dvh w-19 shrink-0 flex-col border-r px-3 py-4 xl:w-64">
@@ -61,9 +65,18 @@ export function Sidebar({ unreadNotificationCount = 0 }: SidebarProps) {
 
       <nav aria-label={t("nav.mainNavigation")} className="flex-1">
         <Suspense
-          fallback={<NavList pathname={null} unreadNotificationCount={unreadNotificationCount} />}
+          fallback={
+            <NavList
+              items={navItems}
+              pathname={null}
+              unreadNotificationCount={unreadNotificationCount}
+            />
+          }
         >
-          <NavListForCurrentPath unreadNotificationCount={unreadNotificationCount} />
+          <NavListForCurrentPath
+            items={navItems}
+            unreadNotificationCount={unreadNotificationCount}
+          />
         </Suspense>
       </nav>
 
@@ -74,21 +87,31 @@ export function Sidebar({ unreadNotificationCount = 0 }: SidebarProps) {
   );
 }
 
-function NavListForCurrentPath({ unreadNotificationCount }: { unreadNotificationCount: number }) {
+function NavListForCurrentPath({
+  items,
+  unreadNotificationCount,
+}: {
+  items: readonly NavItem[];
+  unreadNotificationCount: number;
+}) {
   const pathname = usePathname();
-  return <NavList pathname={pathname} unreadNotificationCount={unreadNotificationCount} />;
+  return (
+    <NavList items={items} pathname={pathname} unreadNotificationCount={unreadNotificationCount} />
+  );
 }
 
 function NavList({
+  items,
   pathname,
   unreadNotificationCount,
 }: {
+  items: readonly NavItem[];
   pathname: string | null;
   unreadNotificationCount: number;
 }) {
   return (
     <ul className="flex flex-col gap-1">
-      {navItems.map((item) => (
+      {items.map((item) => (
         <li key={item.id}>
           <NavEntry
             item={item}

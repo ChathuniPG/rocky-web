@@ -39,6 +39,7 @@ The developer is new to React and Next.js and has a Java / Spring Boot backgroun
 - All API calls go through one typed API client. Response types come from docs/openapi.json; never hand-write duplicate types.
 - Server data lives in TanStack Query. Do not copy server data into local state.
 - Prefer server components; use client components only where interactivity, hooks or browser APIs are needed.
+- Every page under src/app/(app) must export `instant = false` with a short comment referencing ADR-013. These pages only render after the AuthGate confirms the session in the browser, so cacheComponents cannot prerender them to validate instant navigation; without the export, `next dev` reports the page as a dropped segment.
 - Reusable UI lives in src/components/ui (shadcn) and src/components (shared). Feature code lives with its route or in src/features/<feature>.
 - Add shadcn components with `npm run ui:add -- <component...>`; never run `npx shadcn add` directly. The shadcn registry ships components that import `cn` from the young `cn` package and installs it as a dependency. This project uses clsx + tailwind-merge via `@/lib/utils` instead, and the wrapper (scripts/shadcn-add.mjs) rewrites those imports and uninstalls `cn`. ESLint rejects any import from `cn` as a safeguard.
 
@@ -67,7 +68,7 @@ The developer is new to React and Next.js and has a Java / Spring Boot backgroun
 
 ## Quality checks
 
-Before declaring a step complete, run: npm run lint, npm run typecheck, npm run build. Describe what to verify manually in the browser.
+Before declaring a step complete, run: npm run lint, npm run typecheck, npm test, npm run build. Also verify the change under `next dev` (open every affected page and check the browser console and the dev overlay for errors): some checks, such as cacheComponents instant-navigation validation, run only in development, so a passing build is not enough. Describe what to verify manually in the browser.
 
 ## Security
 

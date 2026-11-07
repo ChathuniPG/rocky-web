@@ -10,6 +10,10 @@ const t = getTranslations();
 
 export const metadata: Metadata = { title: t("pages.profile.title") };
 
+// Rendered only after AuthGate confirms the session in the browser (ADR-013), so
+// Next.js cannot prerender this page to validate instant navigation.
+export const instant = false;
+
 /**
  * A user's profile with Posts and Saved tabs (FR-PROF-01..06). Placeholder. The
  * username is only known at request time, so the part that reads it streams in

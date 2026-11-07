@@ -4,7 +4,8 @@
     "close": "Close",
     "loading": "Loading…",
     "comingSoon": "Coming soon",
-    "underConstruction": "This page is under construction."
+    "underConstruction": "This page is under construction.",
+    "retry": "Try again"
   },
   "nav": {
     "mainNavigation": "Main navigation",
@@ -82,6 +83,18 @@
       "description": "The sign-up form is coming soon.",
       "switchPrompt": "Already have an account?",
       "switchLink": "Log in"
+    }
+  },
+  "auth": {
+    "loadingSession": "Loading your account…",
+    "sessionError": {
+      "title": "We couldn't load your account",
+      "description": "Something went wrong on our side or your connection dropped. Please try again."
+    },
+    "logout": {
+      "action": "Log out",
+      "success": "You've been logged out.",
+      "error": "Couldn't log out. Check your connection and try again."
     }
   }
 }

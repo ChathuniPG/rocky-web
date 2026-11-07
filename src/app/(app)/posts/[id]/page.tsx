@@ -10,6 +10,10 @@ const t = getTranslations();
 
 export const metadata: Metadata = { title: t("pages.post.title") };
 
+// Rendered only after AuthGate confirms the session in the browser (ADR-013), so
+// Next.js cannot prerender this page to validate instant navigation.
+export const instant = false;
+
 /**
  * A single post, so shared links work (FR-POST-06). Placeholder. The post id is
  * only known at request time, so that part streams in behind a skeleton (cacheComponents).

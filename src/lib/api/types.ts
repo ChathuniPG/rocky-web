@@ -11,7 +11,8 @@ export type ApiSchemas = components["schemas"];
 /** All API paths with their operations, for typing the API client. */
 export type ApiPaths = paths;
 
-export type ApiError = ApiSchemas["ErrorResponseDto"];
+/** The API's standard error body (design.md 5.1). */
+export type ApiErrorBody = ApiSchemas["ErrorResponseDto"];
 export type User = ApiSchemas["UserResponseDto"];
 export type Profile = ApiSchemas["ProfileResponseDto"];
 export type UserSearchResult = ApiSchemas["UserSearchResultDto"];
