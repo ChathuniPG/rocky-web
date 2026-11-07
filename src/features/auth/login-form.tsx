@@ -4,7 +4,6 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { useMutation } from "@tanstack/react-query";
 import { useState, type FormEvent } from "react";
 import { useForm } from "react-hook-form";
-import { toast } from "sonner";
 
 import { FormErrorAlert } from "@/components/form-error-alert";
 import { FormField } from "@/components/form-field";
@@ -17,7 +16,7 @@ import { api } from "@/lib/api/client";
 
 import { loginSchema, type LoginFormInput, type LoginFormValues } from "./auth-schemas";
 import { mapAuthError, type AuthFormError } from "./map-auth-error";
-import { useCompleteSignIn } from "./use-complete-sign-in";
+import { completeSignIn } from "./session-navigation";
 
 /**
  * Email and password login (FR-AUTH-03..05). Validates on the client first,
@@ -25,7 +24,6 @@ import { useCompleteSignIn } from "./use-complete-sign-in";
  */
 export function LoginForm() {
   const t = useTranslations();
-  const completeSignIn = useCompleteSignIn();
   const [formError, setFormError] = useState<AuthFormError | null>(null);
 
   const {
@@ -50,8 +48,8 @@ export function LoginForm() {
     setFormError(null);
     try {
       const user = await login.mutateAsync(values);
-      toast.success(t("auth.login.success", { name: user.displayName }));
-      completeSignIn(user);
+      // Loads the destination as a new page, which shows this toast (#29).
+      completeSignIn(t("auth.login.success", { name: user.displayName }));
     } catch (error) {
       // Wrong email and wrong password look the same on purpose (design.md 3.4),
       // so login errors are shown for the whole form rather than one field.

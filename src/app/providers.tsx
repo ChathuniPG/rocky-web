@@ -4,6 +4,7 @@ import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { useState, type ReactNode } from "react";
 
 import { ThemeProvider } from "@/components/theme-provider";
+import { ToastAfterReload } from "@/components/toast-after-reload";
 import { Toaster } from "@/components/ui/sonner";
 import { TooltipProvider } from "@/components/ui/tooltip";
 import { I18nProvider } from "@/i18n/i18n-provider";
@@ -58,6 +59,7 @@ export function Providers({ children }: { children: ReactNode }) {
           <TooltipProvider delayDuration={300}>
             {children}
             <Toaster />
+            <ToastAfterReload />
           </TooltipProvider>
         </I18nProvider>
       </QueryClientProvider>

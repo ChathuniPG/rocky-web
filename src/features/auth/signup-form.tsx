@@ -4,7 +4,6 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { useMutation } from "@tanstack/react-query";
 import { useState, type FormEvent } from "react";
 import { useForm } from "react-hook-form";
-import { toast } from "sonner";
 
 import { FormErrorAlert } from "@/components/form-error-alert";
 import { FormField } from "@/components/form-field";
@@ -17,7 +16,7 @@ import { api } from "@/lib/api/client";
 
 import { signupSchema, type SignupFormInput, type SignupFormValues } from "./auth-schemas";
 import { mapAuthError, type AuthFormError } from "./map-auth-error";
-import { useCompleteSignIn } from "./use-complete-sign-in";
+import { completeSignIn } from "./session-navigation";
 
 /**
  * Account creation (FR-AUTH-01..05). The client rules mirror the API; a taken
@@ -26,7 +25,6 @@ import { useCompleteSignIn } from "./use-complete-sign-in";
  */
 export function SignupForm() {
   const t = useTranslations();
-  const completeSignIn = useCompleteSignIn();
   const [formError, setFormError] = useState<AuthFormError | null>(null);
 
   const {
@@ -52,8 +50,8 @@ export function SignupForm() {
     setFormError(null);
     try {
       const user = await signup.mutateAsync(values);
-      toast.success(t("auth.signup.success", { name: user.displayName }));
-      completeSignIn(user);
+      // Loads the destination as a new page, which shows this toast (#29).
+      completeSignIn(t("auth.signup.success", { name: user.displayName }));
     } catch (error) {
       const mapped = mapAuthError(error);
       if (mapped.field) {
