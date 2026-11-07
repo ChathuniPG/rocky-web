@@ -114,7 +114,13 @@ export function PostDetail({ postId }: { postId: string }) {
   return (
     <article aria-labelledby={authorLinkId} className={postDetailGridClasses}>
       <div className={cn(postMediaPaneClasses, "bg-black")}>
-        <PostMedia post={post} sizes={POST_PAGE_MEDIA_SIZES} eager />
+        {/* The Back button holds the top-left corner, so a video's sound control sits beside it. */}
+        <PostMedia
+          post={post}
+          sizes={POST_PAGE_MEDIA_SIZES}
+          eager
+          soundControlClassName="top-5 left-17"
+        />
         <BackButton className="absolute top-4 left-4" />
       </div>
 

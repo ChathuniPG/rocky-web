@@ -1,7 +1,9 @@
 "use client";
 
 import Image from "next/image";
+import type { ReactNode } from "react";
 
+import { VideoPlayer } from "@/features/media/video-player";
 import { useTranslations } from "@/i18n/i18n-provider";
 import type { Post } from "@/lib/api/types";
 import { cn } from "@/lib/utils";
@@ -22,6 +24,10 @@ type PostMediaProps = {
   sizes: string;
   /** Load the image right away, for the first post on screen (largest contentful paint). */
   eager?: boolean;
+  /** Drawn over the media, e.g. the caption; over a video it sits below the player's controls. */
+  overlay?: ReactNode;
+  /** Positions a video's sound control, e.g. beside a Back button; see VideoPlayer. */
+  soundControlClassName?: string;
   className?: string;
 };
 
@@ -30,38 +36,46 @@ type PostMediaProps = {
  * positioned and sized. It is centred and never cropped (object-contain,
  * FR-FEED-10). Images go through next/image (resized and lazy-loaded,
  * NFR-PERF-03; next.config.ts only allows our Storage bucket). Videos use the
- * native player (A-03), muted so they never play sound unasked, and only fetch
- * their metadata until played.
+ * custom VideoPlayer (FR-FEED-09, A-03): autoplay in view, muted unless the
+ * viewer turned sound on, and only their metadata is fetched until played.
  */
-export function PostMedia({ post, sizes, eager = false, className }: PostMediaProps) {
+export function PostMedia({
+  post,
+  sizes,
+  eager = false,
+  overlay,
+  soundControlClassName,
+  className,
+}: PostMediaProps) {
   const t = useTranslations();
   const name = post.author.displayName;
 
   if (post.mediaType === "VIDEO") {
     return (
-      <video
+      <VideoPlayer
         src={post.mediaUrl}
-        controls
-        preload="metadata"
-        playsInline
-        muted
-        aria-label={t("post.videoLabel", { name })}
-        className={cn("absolute inset-0 size-full object-contain", className)}
+        label={t("post.videoLabel", { name })}
+        overlay={overlay}
+        soundControlClassName={soundControlClassName}
+        className={className}
       />
     );
   }
 
   return (
-    <Image
-      src={post.mediaUrl}
-      alt={t("post.imageAlt", { name })}
-      fill
-      sizes={sizes}
-      // Next 16 recommends loading/fetchPriority over the `preload` prop when several
-      // images could be the LCP element, as in a feed.
-      loading={eager ? "eager" : "lazy"}
-      fetchPriority={eager ? "high" : "auto"}
-      className={cn("object-contain", className)}
-    />
+    <>
+      <Image
+        src={post.mediaUrl}
+        alt={t("post.imageAlt", { name })}
+        fill
+        sizes={sizes}
+        // Next 16 recommends loading/fetchPriority over the `preload` prop when several
+        // images could be the LCP element, as in a feed.
+        loading={eager ? "eager" : "lazy"}
+        fetchPriority={eager ? "high" : "auto"}
+        className={cn("object-contain", className)}
+      />
+      {overlay}
+    </>
   );
 }

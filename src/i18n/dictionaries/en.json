@@ -102,6 +102,17 @@
   "post": {
     "imageAlt": "Photo posted by {name}",
     "videoLabel": "Video posted by {name}",
+    "video": {
+      "play": "Play video",
+      "pause": "Pause video",
+      "mute": "Mute",
+      "unmute": "Unmute",
+      "volume": "Volume",
+      "volumeValue": "{percent}%",
+      "progress": "Video progress",
+      "progressValue": "{current} of {total}",
+      "shortcuts": "Shortcuts: Space or K to play or pause, M to mute, Left and Right arrows to skip 5 seconds, Up and Down arrows to change the volume."
+    },
     "actions": {
       "like": "Like. Likes: {count}",
       "comments": "Comments: {count}",
@@ -122,6 +133,7 @@
     },
     "authorProfile": "{name}’s profile",
     "caption": {
+      "label": "Caption",
       "more": "more",
       "less": "less"
     }
