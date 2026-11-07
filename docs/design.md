@@ -6,6 +6,7 @@
 | 0.2         | 05 Nov 2026 | Chathuni Gunasena | Align index definitions with query ordering.      |
 | 0.3         | 06 Nov 2026 | Chathuni Gunasena | Added ADR-011 (Service account loaded from file path), Added ADR-012 (In-memory rate-limit storage).      |
 | 0.4         | 06 Nov 2026 | Chathuni Gunasena | Millisecond created_at precision on cursor-paginated tables; posts.media_path unique.      |
+| 0.5         | 07 Nov 2026 | Chathuni Gunasena | Added ADR-013 (Client-side route protection via AuthProvider to support seamless token refreshes).      |
 
 ## 1. Purpose
 
@@ -367,7 +368,9 @@ Shared code lives in a common folder: the auth guard, the @CurrentUser() decorat
 | /messages, /messages/\[id\] | Conversation list and thread       |
 | /settings                   | Settings                           |
 
-The “Post” navigation item opens a create-post dialog rather than navigating to a separate page. Next.js middleware redirects unauthenticated users to /login.
+The “Post” navigation item opens a create-post dialog rather than navigating to a separate page.
+
+Route protection follows ADR-013. The app routes are protected on the client: an AuthProvider loads /auth/me, refreshing the session once on a 401, and shows a full-page skeleton until the user is known. If the refresh also fails, the user is redirected to /login?next=<current path>, and after login they return to that path. Only same-site relative paths are accepted for `next`; anything else falls back to /. The Next.js proxy (formerly middleware) only redirects visitors who have a rocky_id cookie away from /login and /signup to /.
 
 Figure 5 summarizes the route structure and how authentication controls access.
 
@@ -387,7 +390,7 @@ Figure 5 summarizes the route structure and how authentication controls access.
 
 - **Server data** (posts, users, notifications): TanStack Query, which handles caching, loading states, infinite scroll, and optimistic updates.
 
-- **Auth state:** a React context populated from /auth/me.
+- **Auth state:** a React context populated from /auth/me (cached in TanStack Query). The single API client refreshes the session once on a 401, shares one refresh between concurrent requests, and retries the original request (Section 3.6).
 
 - **Theme:** next-themes.
 
@@ -506,3 +509,11 @@ Figure 5 summarizes the route structure and how authentication controls access.
 - **Decision:** Use the default in-memory storage, keyed by client IP. Limits are code constants: 100 requests per minute globally, 10 per minute on sign-up, login and refresh, 20 per minute on uploads, and 30 per minute on sending messages. Trust proxy is set to loopback only, so the client IP comes from Nginx's X-Forwarded-For header and cannot be spoofed by a client connecting directly.
 
 - **Consequences:** No extra infrastructure, and the limits are correct while the API runs as a single process (one PM2 instance, NFR-OPS-01). Counters reset when the process restarts, and they would not be shared if the API ran in PM2 cluster mode or on several instances: each process would allow the full limit. Scaling out requires switching to a shared store (e.g. a Redis-backed throttler storage).
+
+### ADR-013: Client-side route protection
+
+- **Context:** rocky_id expires after one hour, and the browser then deletes it, while the session itself lives on through rocky_refresh. rocky_refresh is scoped to /api/v1/auth, so it is never sent with page requests. A Next.js proxy (middleware) therefore cannot tell whether a visitor without rocky_id is signed out or only needs a refresh, and redirecting on a missing rocky_id would log users out every hour (FR-AUTH-08).
+
+- **Decision:** Protect app routes on the client. An AuthProvider loads /auth/me through the API client, which calls POST /auth/refresh once on a 401 and retries. Only if the refresh fails is the user redirected to /login?next=<current path>. While the user loads, a full-page skeleton is shown instead of protected content. The proxy only redirects visitors who have a rocky_id cookie away from /login and /signup to /. The API remains the security boundary: every protected endpoint verifies the token itself (NFR-SEC-01).
+
+- **Consequences:** Sessions survive ID-token expiry without forcing re-login, and no session logic is duplicated in Next.js. Protected pages cannot be rendered with user data on the server, and signed-out visitors briefly see a skeleton before the redirect. That is acceptable because the protected pages hold no data until the API returns it. A stale rocky_id cookie can cause one extra redirect from /login to / and back, which ends once the API clears the cookies on the failed refresh. Because their content only renders after the session is confirmed in the browser, every page under the (app) route group exports `instant = false`, which opts it out of the Next.js instant-navigation validation that cacheComponents runs in development.
