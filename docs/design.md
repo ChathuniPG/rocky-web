@@ -7,6 +7,7 @@
 | 0.3         | 06 Nov 2026 | Chathuni Gunasena | Added ADR-011 (Service account loaded from file path), Added ADR-012 (In-memory rate-limit storage).      |
 | 0.4         | 06 Nov 2026 | Chathuni Gunasena | Millisecond created_at precision on cursor-paginated tables; posts.media_path unique.      |
 | 0.5         | 07 Nov 2026 | Chathuni Gunasena | Added ADR-013 (Client-side route protection via AuthProvider to support seamless token refreshes).      |
+| 0.6         | 07 Nov 2026 | Chathuni Gunasena | Section 7.2: TikTok-style feed and post layout (FR-FEED-10, FR-POST-07).      |
 
 ## 1. Purpose
 
@@ -385,6 +386,12 @@ Figure 5 summarizes the route structure and how authentication controls access.
 - **Small laptops:** the sidebar collapses to icons only.
 
 - **Widescreen:** content width is capped for readability, and a right panel shows suggested users.
+
+- **Content column:** list and form pages (search, profile, notifications, messages, settings) share a width-capped column. The Home feed and the post page use the full height of the viewport instead.
+
+- **Home feed (FR-FEED-10):** one post per screen, with mandatory vertical scroll snapping below a slim sticky header. The media sits in a centred 9:16 frame sized to the available height and is never cropped (object-contain). From 768px a vertical action column sits to the right of the frame: the author's avatar (a link to the profile), then like, comment, save and share. Like and comment show their counts; save and share show a label. Below 768px the same actions form a row under the media. The username, time and caption are overlaid at the bottom of the media on a dark gradient scrim with white text, so contrast does not depend on the theme. Over videos the overlay sits above the native control bar. Long captions are clamped to two lines with a "more" toggle. More posts load as the last one nears the viewport, with a "Load more" button as a fallback. The comment action opens the post page.
+
+- **Post page (FR-POST-07):** from 1024px, the media fills a left pane and a comments panel sits on the right: the author, the owner's menu, the caption, the actions and the comments scroll in the panel, and the comment form is pinned at its bottom. Below 1024px the media is stacked above the panel and the page scrolls. A Back button over the media, and the Escape key, return to the previous page with its scroll position when the user came from within the app, and go to Home when the page was opened directly (e.g. a shared link). Escape is ignored while a dialog or menu is open or while the user is typing.
 
 ### 7.3 State Management
 

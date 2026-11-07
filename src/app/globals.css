@@ -145,6 +145,15 @@
   [data-theme-preview="light"] {
     color-scheme: light;
   }
+  /*
+   * One post per screen in the Home feed (FR-FEED-10). Set by useFeedScrollSnap
+   * only while the feed is visible; the padding matches the feed's sticky
+   * header (h-14), so a snapped post starts right below it.
+   */
+  html[data-feed-snap] {
+    scroll-snap-type: y mandatory;
+    scroll-padding-top: 3.5rem;
+  }
   body {
     @apply bg-background text-foreground;
   }
