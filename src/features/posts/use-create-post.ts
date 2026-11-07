@@ -3,6 +3,7 @@
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 
 import { useCurrentUser } from "@/features/auth/auth-provider";
+import { userKeys } from "@/features/users/user-query-keys";
 import { api } from "@/lib/api/client";
 
 import { postKeys } from "./post-query-keys";
@@ -24,8 +25,8 @@ export function useCreatePost() {
       // Not awaited: the dialog can close while the feed (possibly many pages) refetches.
       void queryClient.invalidateQueries({ queryKey: postKeys.feed() });
       void queryClient.invalidateQueries({ queryKey: postKeys.byUser(username) });
-      // The profile header's post count; the profile query arrives with its own issue.
-      void queryClient.invalidateQueries({ queryKey: ["users", username] });
+      // The profile header's post count.
+      void queryClient.invalidateQueries({ queryKey: userKeys.profile(username) });
     },
   });
 }

@@ -45,7 +45,39 @@
   "search": {
     "label": "Search users",
     "placeholder": "Search users",
-    "clear": "Clear search"
+    "clear": "Clear search",
+    "filter": {
+      "label": "Filter results",
+      "all": "All users",
+      "following": "People I follow"
+    },
+    "prompt": {
+      "title": "Find people",
+      "description": "Search by username or display name.",
+      "followingDescription": "Search the people you follow by username or display name."
+    },
+    "empty": {
+      "title": "No results for “{query}”",
+      "description": "Check the spelling or try a shorter search.",
+      "followingDescription": "No one you follow matches this search. Try “All users” instead."
+    },
+    "error": {
+      "title": "Couldn’t load search results"
+    },
+    "searching": "Searching…",
+    "resultsLabel": "Search results",
+    "resultsStatus": "Showing results for “{query}”",
+    "loadMore": "Load more people"
+  },
+  "follow": {
+    "follow": "Follow",
+    "following": "Following",
+    "followName": "Follow {name}",
+    "followingName": "Following {name}",
+    "toast": {
+      "followFailed": "Couldn’t follow {name}.",
+      "unfollowFailed": "Couldn’t unfollow {name}."
+    }
   },
   "avatar": {
     "alt": "{name}'s profile picture"
