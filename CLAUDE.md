@@ -29,6 +29,7 @@ The developer is new to React and Next.js and has a Java / Spring Boot backgroun
 - react-hook-form with zod for forms
 - sonner for toasts
 - Check the current official documentation for Next.js and each library before using an API; recent versions changed some conventions. Do not rely on older patterns from memory.
+- This Next.js version has breaking changes; APIs, conventions and file structure may differ from older releases. Before using any Next.js API, read the relevant guide in the bundled docs at `node_modules/next/dist/docs/` and follow its deprecation notices.
 
 ## Architecture rules
 

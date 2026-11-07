@@ -1,0 +1,9 @@
+.next
+node_modules
+package-lock.json
+next-env.d.ts
+src/lib/api/schema.d.ts
+docs/openapi.json
+# Source documents and the PR template are kept exactly as authored.
+docs
+.github/pull_request_template.md
