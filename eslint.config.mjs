@@ -17,6 +17,12 @@ const eslintConfig = defineConfig([
       ],
       "react/jsx-no-useless-fragment": "error",
       "react/self-closing-comp": "error",
+      // shadcn's registry imports the young `cn` package; use clsx + tailwind-merge
+      // through @/lib/utils (add components with `npm run ui:add`).
+      "no-restricted-imports": [
+        "error",
+        { paths: [{ name: "cn", message: 'Import { cn } from "@/lib/utils" instead.' }] },
+      ],
     },
   },
   // Type-aware rules, consistent with rocky-api (ADR-010): unhandled promises are a

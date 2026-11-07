@@ -1,0 +1,87 @@
+{
+  "common": {
+    "appName": "R.O.C.K.Y.",
+    "close": "Close",
+    "loading": "Loading…",
+    "comingSoon": "Coming soon",
+    "underConstruction": "This page is under construction."
+  },
+  "nav": {
+    "mainNavigation": "Main navigation",
+    "skipToContent": "Skip to main content",
+    "home": "Home",
+    "search": "Search",
+    "post": "Post",
+    "notifications": "Notifications",
+    "messages": "Messages",
+    "profile": "Profile",
+    "settings": "Settings",
+    "unreadNotifications": "{count} unread notifications"
+  },
+  "theme": {
+    "change": "Change theme",
+    "light": "Light",
+    "dark": "Dark",
+    "system": "System"
+  },
+  "search": {
+    "label": "Search users",
+    "placeholder": "Search users",
+    "clear": "Clear search"
+  },
+  "avatar": {
+    "alt": "{name}'s profile picture"
+  },
+  "toast": {
+    "region": "Notifications",
+    "close": "Close notification"
+  },
+  "createPost": {
+    "title": "Create post",
+    "description": "Creating posts is coming soon."
+  },
+  "rightPanel": {
+    "suggestedTitle": "Suggested for you",
+    "suggestedEmpty": "Suggested users will appear here."
+  },
+  "pages": {
+    "home": {
+      "title": "Home",
+      "emptyTitle": "Your feed is on its way",
+      "emptyDescription": "Posts from people you follow will appear here."
+    },
+    "search": {
+      "title": "Search"
+    },
+    "notifications": {
+      "title": "Notifications"
+    },
+    "messages": {
+      "title": "Messages"
+    },
+    "conversation": {
+      "title": "Conversation"
+    },
+    "profile": {
+      "title": "Profile"
+    },
+    "post": {
+      "title": "Post"
+    },
+    "settings": {
+      "title": "Settings"
+    },
+    "login": {
+      "title": "Log in",
+      "description": "The login form is coming soon.",
+      "switchPrompt": "New here?",
+      "switchLink": "Create an account"
+    },
+    "signup": {
+      "title": "Sign up",
+      "description": "The sign-up form is coming soon.",
+      "switchPrompt": "Already have an account?",
+      "switchLink": "Log in"
+    }
+  }
+}
