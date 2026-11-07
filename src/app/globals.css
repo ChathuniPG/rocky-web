@@ -2,8 +2,17 @@
 @import "tw-animate-css";
 @import "shadcn/tailwind.css";
 
-/* next-themes toggles the `dark` class on <html> (FR-SET-01). */
-@custom-variant dark (&:where(.dark, .dark *));
+/*
+ * next-themes toggles the `dark` class on <html> (FR-SET-01). The
+ * [data-theme-preview] scopes let the dev component showcase render a light and
+ * a dark panel side by side, whatever the page theme is.
+ */
+@custom-variant dark (&:where(
+  .dark,
+  .dark *:not([data-theme-preview="light"], [data-theme-preview="light"] *),
+  [data-theme-preview="dark"],
+  [data-theme-preview="dark"] *
+));
 
 /*
  * Design tokens: design.md Section 7.4. The five brand values are taken as-is;
@@ -15,7 +24,8 @@
  *          highlight-fg/highlight 8.6, input/card 3.1
  * White text on orange is only 2.8:1, so orange surfaces always use dark text.
  */
-:root {
+:root,
+[data-theme-preview="light"] {
   --background: #fafafb;
   --foreground: #1a1428;
   --card: #ffffff;
@@ -49,7 +59,8 @@
   --radius: 0.625rem;
 }
 
-.dark {
+.dark,
+[data-theme-preview="dark"] {
   --background: #0f0b1a;
   --foreground: #f4f2f8;
   --card: #1a1428;
@@ -127,8 +138,12 @@
     /* Lets native controls and scrollbars follow the active theme. */
     color-scheme: light;
   }
-  html.dark {
+  html.dark,
+  [data-theme-preview="dark"] {
     color-scheme: dark;
+  }
+  [data-theme-preview="light"] {
+    color-scheme: light;
   }
   body {
     @apply bg-background text-foreground;

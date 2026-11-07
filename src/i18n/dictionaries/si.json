@@ -1,0 +1,87 @@
+{
+  "common": {
+    "appName": "R.O.C.K.Y.",
+    "close": "වසන්න",
+    "loading": "පූරණය වෙමින්…",
+    "comingSoon": "ඉක්මනින් පැමිණේ",
+    "underConstruction": "මෙම පිටුව සකස් කරමින් පවතී."
+  },
+  "nav": {
+    "mainNavigation": "ප්‍රධාන සංචාලනය",
+    "skipToContent": "ප්‍රධාන අන්තර්ගතයට යන්න",
+    "home": "මුල් පිටුව",
+    "search": "සොයන්න",
+    "post": "පළ කරන්න",
+    "notifications": "දැනුම්දීම්",
+    "messages": "පණිවිඩ",
+    "profile": "පැතිකඩ",
+    "settings": "සැකසුම්",
+    "unreadNotifications": "නොකියවූ දැනුම්දීම් {count}"
+  },
+  "theme": {
+    "change": "තේමාව වෙනස් කරන්න",
+    "light": "ආලෝක",
+    "dark": "අඳුරු",
+    "system": "පද්ධතිය"
+  },
+  "search": {
+    "label": "පරිශීලකයන් සොයන්න",
+    "placeholder": "පරිශීලකයන් සොයන්න",
+    "clear": "සෙවුම මකන්න"
+  },
+  "avatar": {
+    "alt": "{name}ගේ පැතිකඩ පින්තූරය"
+  },
+  "toast": {
+    "region": "දැනුම්දීම්",
+    "close": "දැනුම්දීම වසන්න"
+  },
+  "createPost": {
+    "title": "පළකිරීමක් සාදන්න",
+    "description": "පළකිරීම් සෑදීම ඉක්මනින් පැමිණේ."
+  },
+  "rightPanel": {
+    "suggestedTitle": "ඔබට යෝජිත",
+    "suggestedEmpty": "යෝජිත පරිශීලකයන් මෙහි දිස්වේ."
+  },
+  "pages": {
+    "home": {
+      "title": "මුල් පිටුව",
+      "emptyTitle": "ඔබේ පළකිරීම් ළඟදීම",
+      "emptyDescription": "ඔබ අනුගමනය කරන අයගේ පළකිරීම් මෙහි දිස්වේ."
+    },
+    "search": {
+      "title": "සොයන්න"
+    },
+    "notifications": {
+      "title": "දැනුම්දීම්"
+    },
+    "messages": {
+      "title": "පණිවිඩ"
+    },
+    "conversation": {
+      "title": "සංවාදය"
+    },
+    "profile": {
+      "title": "පැතිකඩ"
+    },
+    "post": {
+      "title": "පළකිරීම"
+    },
+    "settings": {
+      "title": "සැකසුම්"
+    },
+    "login": {
+      "title": "පිවිසෙන්න",
+      "description": "පිවිසුම් පෝරමය ඉක්මනින් පැමිණේ.",
+      "switchPrompt": "අලුතින් පැමිණියාද?",
+      "switchLink": "ගිණුමක් සාදන්න"
+    },
+    "signup": {
+      "title": "ලියාපදිංචි වන්න",
+      "description": "ලියාපදිංචි පෝරමය ඉක්මනින් පැමිණේ.",
+      "switchPrompt": "දැනටමත් ගිණුමක් තිබේද?",
+      "switchLink": "පිවිසෙන්න"
+    }
+  }
+}

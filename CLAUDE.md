@@ -40,6 +40,7 @@ The developer is new to React and Next.js and has a Java / Spring Boot backgroun
 - Server data lives in TanStack Query. Do not copy server data into local state.
 - Prefer server components; use client components only where interactivity, hooks or browser APIs are needed.
 - Reusable UI lives in src/components/ui (shadcn) and src/components (shared). Feature code lives with its route or in src/features/<feature>.
+- Add shadcn components with `npm run ui:add -- <component...>`; never run `npx shadcn add` directly. The shadcn registry ships components that import `cn` from the young `cn` package and installs it as a dependency. This project uses clsx + tailwind-merge via `@/lib/utils` instead, and the wrapper (scripts/shadcn-add.mjs) rewrites those imports and uninstalls `cn`. ESLint rejects any import from `cn` as a safeguard.
 
 ## Design
 
@@ -76,5 +77,6 @@ Before declaring a step complete, run: npm run lint, npm run typecheck, npm run 
 
 ## Git
 
-- Do not run git commands. The developer handles all Git operations.
+- Read-only git commands are allowed: `git status`, `git diff`, `git log`, `git show`.
+- Never run git commands that change the working tree, the index or history (e.g. add, commit, restore, checkout, reset, stash, rebase, merge, push). The developer handles all commits.
 - Commit messages follow Conventional Commits: type(scope): description.
