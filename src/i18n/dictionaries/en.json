@@ -56,7 +56,36 @@
   },
   "createPost": {
     "title": "Create post",
-    "description": "Creating posts is coming soon."
+    "description": "Share a photo or a short video with a caption.",
+    "dropzone": {
+      "prompt": "Drag a photo or video here",
+      "dropHere": "Drop to add it",
+      "choose": "Choose a file",
+      "hint": "JPEG, PNG or WebP up to 5 MB · MP4 or WebM up to 25 MB"
+    },
+    "changeFile": "Change file",
+    "previewImageAlt": "Preview of the selected photo",
+    "previewVideoLabel": "Preview of the selected video",
+    "captionLabel": "Caption",
+    "captionPlaceholder": "Write a caption… (optional)",
+    "submit": "Post",
+    "cancelUpload": "Cancel upload",
+    "uploadProgress": "Upload progress",
+    "uploading": "Uploading… {percent}%",
+    "uploadCancelled": "Upload cancelled.",
+    "success": "Your post is live.",
+    "view": "View",
+    "errors": {
+      "noFile": "Choose a photo or video to post.",
+      "oneFile": "Drop one file at a time.",
+      "empty": "This file is empty. Choose another one.",
+      "unsupportedType": "This file type isn’t supported. Use a JPEG, PNG or WebP photo, or an MP4 or WebM video.",
+      "imageTooLarge": "This photo is {size}. Photos can be at most {max}.",
+      "videoTooLarge": "This video is {size}. Videos can be at most {max}.",
+      "tooLarge": "The file is too large. Photos can be up to 5 MB and videos up to 25 MB.",
+      "rejectedFile": "The server didn’t accept this file. It may not be a valid photo or video.",
+      "rejectedPost": "The post couldn’t be created. Check the caption and try again."
+    }
   },
   "rightPanel": {
     "suggestedTitle": "Suggested for you",
