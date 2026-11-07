@@ -10,6 +10,7 @@
 | 0.6         | 07 Nov 2026 | Chathuni Gunasena | Section 7.2: TikTok-style feed and post layout (FR-FEED-10, FR-POST-07).      |
 | 0.7         | 07 Nov 2026 | Chathuni Gunasena | Section 7.2: custom video player with autoplay (FR-FEED-09).      |
 | 0.8         | 08 Nov 2026 | Chathuni Gunasena | Section 7.2: text halo instead of a dark band for text over media; scrolling expanded captions.      |
+| 0.9         | 08 Nov 2026 | Chathuni Gunasena | Added ADR-014 (Full page load when the signed-in user changes); Section 7.3 references it.      |
 
 ## 1. Purpose
 
@@ -403,6 +404,8 @@ Figure 5 summarizes the route structure and how authentication controls access.
 
 - **Auth state:** a React context populated from /auth/me (cached in TanStack Query). The single API client refreshes the session once on a 401, shares one refresh between concurrent requests, and retries the original request (Section 3.6).
 
+- **Switching users:** logout, session expiry, login and signup end with a full page load, so no client state carries over to the next account (ADR-014).
+
 - **Theme:** next-themes.
 
 - **Language:** a lightweight custom context with JSON dictionaries (English plus one additional language).
@@ -528,3 +531,11 @@ Figure 5 summarizes the route structure and how authentication controls access.
 - **Decision:** Protect app routes on the client. An AuthProvider loads /auth/me through the API client, which calls POST /auth/refresh once on a 401 and retries. Only if the refresh fails is the user redirected to /login?next=<current path>. While the user loads, a full-page skeleton is shown instead of protected content. The proxy only redirects visitors who have a rocky_id cookie away from /login and /signup to /. The API remains the security boundary: every protected endpoint verifies the token itself (NFR-SEC-01).
 
 - **Consequences:** Sessions survive ID-token expiry without forcing re-login, and no session logic is duplicated in Next.js. Protected pages cannot be rendered with user data on the server, and signed-out visitors briefly see a skeleton before the redirect. That is acceptable because the protected pages hold no data until the API returns it. A stale rocky_id cookie can cause one extra redirect from /login to / and back, which ends once the API clears the cookies on the failed refresh. Because their content only renders after the session is confirmed in the browser, every page under the (app) route group exports `instant = false`, which opts it out of the Next.js instant-navigation validation that cacheComponents runs in development.
+
+### ADR-014: Full page load when the signed-in user changes
+
+- **Context:** With cacheComponents, Next.js keeps visited pages mounted but hidden (React Activity). A client-side navigation after logout or login carried React state from the previous session into the next one: a stopped auth query left the app stuck loading, and a kept login form stayed busy.
+
+- **Decision:** Logout, session expiry, login and signup navigate with a full page load (window.location.assign) after clearing the query cache. Post-login destinations still pass through the safe-redirect check. Confirmation toasts survive the reload via sessionStorage.
+
+- **Consequences:** No client state from a previous account can survive a switch: query cache, hidden pages, in-memory singletons, scroll memory and router cache are all reset. Signing in or out costs one full page load, which is acceptable for a rare action.

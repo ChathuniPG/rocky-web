@@ -1,7 +1,6 @@
 "use client";
 
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
-import { useRouter } from "next/navigation";
 import {
   createContext,
   useCallback,
@@ -16,8 +15,10 @@ import { toast } from "sonner";
 import { useTranslations } from "@/i18n/i18n-provider";
 import { api, setSessionExpiredHandler } from "@/lib/api/client";
 import type { User } from "@/lib/api/types";
+import { queueToastAfterReload } from "@/lib/toast-after-reload";
 
 import { authMeQueryKey, fetchCurrentUser } from "./auth-query";
+import { endSessionWithFullReload } from "./session-navigation";
 
 /** What {@link useAuth} returns. */
 export type AuthContextValue = {
@@ -29,7 +30,7 @@ export type AuthContextValue = {
   error: Error | null;
   /** Retries loading the user after an error. */
   retry: () => void;
-  /** Revokes the session (FR-AUTH-06), clears cached data and goes to /login. */
+  /** Revokes the session (FR-AUTH-06), clears cached data and loads /login as a new page. */
   logout: () => void;
   /** True while the logout request is in flight. */
   isLoggingOut: boolean;
@@ -48,13 +49,17 @@ function loginUrlForCurrentPage(): string {
  * Wraps the signed-in routes only. Route protection happens here on the client
  * (ADR-013): if the session can't be refreshed, the user is sent to
  * /login?next=<current path>. The API stays the security boundary.
+ *
+ * Ending the session always loads the next page as a new document, so no
+ * state of this provider (or anything else) carries over to the next user;
+ * see session-navigation.ts.
  */
 export function AuthProvider({ children }: { children: ReactNode }) {
   const queryClient = useQueryClient();
-  const router = useRouter();
   const t = useTranslations();
-  // Once the session has ended, stop asking /auth/me: clearing the cache would
-  // otherwise let the query refetch and start a second redirect.
+  // Once the session has ended, stop asking /auth/me until the new page loads:
+  // clearing the cache would otherwise let the query refetch and start a second
+  // redirect. The full page load discards this state, so it never outlives the session.
   const [sessionEnded, setSessionEnded] = useState(false);
 
   const userQuery = useQuery({
@@ -68,10 +73,9 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   const endSession = useCallback(
     (destination: string) => {
       setSessionEnded(true);
-      queryClient.clear();
-      router.replace(destination);
+      endSessionWithFullReload(queryClient, destination);
     },
-    [queryClient, router],
+    [queryClient],
   );
 
   useEffect(
@@ -82,7 +86,8 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   const logoutMutation = useMutation({
     mutationFn: () => api.post("/auth/logout"),
     onSuccess: () => {
-      toast.success(t("auth.logout.success"));
+      // Shown on the login page, after the full page load.
+      queueToastAfterReload(t("auth.logout.success"));
       endSession("/login");
     },
     // Logout always succeeds on the API; failing here means the request never
