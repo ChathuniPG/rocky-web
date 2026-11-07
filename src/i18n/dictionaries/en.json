@@ -5,7 +5,9 @@
     "loading": "Loading…",
     "comingSoon": "Coming soon",
     "underConstruction": "This page is under construction.",
-    "retry": "Try again"
+    "retry": "Try again",
+    "cancel": "Cancel",
+    "characterCount": "{count} of {max} characters used"
   },
   "errors": {
     "network": "Can’t reach the server. Check your connection and try again.",
@@ -16,6 +18,11 @@
   },
   "list": {
     "pageError": "Couldn’t load more."
+  },
+  "validation": {
+    "commentRequired": "Write a comment first.",
+    "commentTooLong": "Comments can be at most {max} characters.",
+    "captionTooLong": "Captions can be at most {max} characters."
   },
   "nav": {
     "mainNavigation": "Main navigation",
@@ -82,6 +89,52 @@
       "linkCopied": "Link copied to clipboard.",
       "linkCopyFailed": "Couldn’t copy the link. Your browser blocked clipboard access."
     }
+  },
+  "postPage": {
+    "loading": "Loading post…",
+    "errorTitle": "We couldn’t load this post",
+    "notFoundTitle": "Post not found",
+    "notFoundDescription": "It may have been deleted, or the link may be wrong.",
+    "backHome": "Back to Home"
+  },
+  "postOwner": {
+    "menu": "Post options",
+    "edit": "Edit caption",
+    "delete": "Delete post"
+  },
+  "editCaption": {
+    "title": "Edit caption",
+    "description": "Change the text shown with your post.",
+    "label": "Caption",
+    "save": "Save",
+    "success": "Caption updated.",
+    "error": "Couldn’t update the caption."
+  },
+  "deletePost": {
+    "title": "Delete this post?",
+    "description": "The post and its likes, comments and saves will be removed. This can’t be undone.",
+    "confirm": "Delete",
+    "success": "Post deleted.",
+    "error": "Couldn’t delete the post."
+  },
+  "comments": {
+    "heading": "Comments",
+    "label": "Add a comment",
+    "placeholder": "Add a comment…",
+    "submit": "Comment",
+    "added": "Comment added.",
+    "addFailed": "Couldn’t add your comment.",
+    "loading": "Loading comments…",
+    "emptyTitle": "No comments yet",
+    "emptyDescription": "Be the first to say something.",
+    "errorTitle": "We couldn’t load the comments",
+    "loadMore": "Load more comments",
+    "delete": "Delete comment",
+    "deleteTitle": "Delete this comment?",
+    "deleteDescription": "This can’t be undone.",
+    "deleteConfirm": "Delete",
+    "deleted": "Comment deleted.",
+    "deleteFailed": "Couldn’t delete the comment."
   },
   "pages": {
     "home": {

@@ -14,8 +14,8 @@ type InfiniteListFooterProps = {
   fetchNextPage: () => void;
   /** Label of the fallback button, e.g. "Load more posts". */
   loadMoreLabel: string;
-  /** Shown after the last page, e.g. "You're all caught up". */
-  endLabel: string;
+  /** Shown after the last page, e.g. "You're all caught up". Nothing is shown when omitted. */
+  endLabel?: string;
 };
 
 /**
@@ -43,6 +43,7 @@ export function InfiniteListFooter({
   });
 
   if (!hasNextPage) {
+    if (!endLabel) return null;
     return (
       <p className="flex items-center justify-center gap-2 py-6 text-sm text-muted-foreground">
         <CircleCheckIcon aria-hidden="true" className="size-4" />
