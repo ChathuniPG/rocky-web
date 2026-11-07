@@ -1,26 +1,140 @@
 @import "tailwindcss";
+@import "tw-animate-css";
+@import "shadcn/tailwind.css";
 
+/* next-themes toggles the `dark` class on <html> (FR-SET-01). */
+@custom-variant dark (&:where(.dark, .dark *));
+
+/*
+ * Design tokens: design.md Section 7.4. The five brand values are taken as-is;
+ * the others are derived from them. Every text pairing meets WCAG AA (4.5:1) and
+ * input borders and focus rings meet 3:1 (NFR-UX-02):
+ *   light: text/bg 17.1, primary-fg/primary 5.7, muted-fg/bg 6.4,
+ *          highlight-fg/highlight 6.4, highlight-text/bg 5.0, input/card 3.4
+ *   dark:  text/bg 17.5, primary-fg/primary 7.1, muted-fg/card 8.0,
+ *          highlight-fg/highlight 8.6, input/card 3.1
+ * White text on orange is only 2.8:1, so orange surfaces always use dark text.
+ */
 :root {
-  --background: #ffffff;
-  --foreground: #171717;
+  --background: #fafafb;
+  --foreground: #1a1428;
+  --card: #ffffff;
+  --card-foreground: #1a1428;
+  --popover: #ffffff;
+  --popover-foreground: #1a1428;
+
+  /* Purple: primary actions, active navigation, focus rings. */
+  --primary: #7c3aed;
+  --primary-hover: #6d28d9;
+  --primary-foreground: #ffffff;
+
+  --secondary: #ede7fb;
+  --secondary-foreground: #3b1f7a;
+  --muted: #f1eef5;
+  --muted-foreground: #5f5872;
+  /* shadcn's "accent" is the subtle hover surface, not the brand orange. */
+  --accent: #f1ecfd;
+  --accent-foreground: #1a1428;
+
+  /* Orange: likes, notification badges, highlights. */
+  --highlight: #f97316;
+  --highlight-foreground: #1a1428;
+  --highlight-text: #c2410c;
+
+  --destructive: #dc2626;
+  --destructive-foreground: #ffffff;
+  --border: #e6e2ee;
+  --input: #8f879f;
+  --ring: #7c3aed;
+  --radius: 0.625rem;
+}
+
+.dark {
+  --background: #0f0b1a;
+  --foreground: #f4f2f8;
+  --card: #1a1428;
+  --card-foreground: #f4f2f8;
+  --popover: #1a1428;
+  --popover-foreground: #f4f2f8;
+
+  --primary: #a78bfa;
+  --primary-hover: #c4b5fd;
+  --primary-foreground: #0f0b1a;
+
+  --secondary: #2a2140;
+  --secondary-foreground: #f4f2f8;
+  --muted: #251d38;
+  --muted-foreground: #b1a9c3;
+  --accent: #2a2140;
+  --accent-foreground: #f4f2f8;
+
+  --highlight: #fb923c;
+  --highlight-foreground: #0f0b1a;
+  --highlight-text: #fb923c;
+
+  --destructive: #f87171;
+  --destructive-foreground: #0f0b1a;
+  --border: #2e2645;
+  --input: #6b6185;
+  --ring: #a78bfa;
 }
 
 @theme inline {
+  --font-sans:
+    var(--font-inter), var(--font-sinhala), ui-sans-serif, system-ui, sans-serif,
+    "Apple Color Emoji", "Segoe UI Emoji";
+  --font-heading: var(--font-sans);
+
   --color-background: var(--background);
   --color-foreground: var(--foreground);
-  --font-sans: var(--font-geist-sans);
-  --font-mono: var(--font-geist-mono);
+  --color-card: var(--card);
+  --color-card-foreground: var(--card-foreground);
+  --color-popover: var(--popover);
+  --color-popover-foreground: var(--popover-foreground);
+  --color-primary: var(--primary);
+  --color-primary-hover: var(--primary-hover);
+  --color-primary-foreground: var(--primary-foreground);
+  --color-secondary: var(--secondary);
+  --color-secondary-foreground: var(--secondary-foreground);
+  --color-muted: var(--muted);
+  --color-muted-foreground: var(--muted-foreground);
+  --color-accent: var(--accent);
+  --color-accent-foreground: var(--accent-foreground);
+  --color-highlight: var(--highlight);
+  --color-highlight-foreground: var(--highlight-foreground);
+  --color-highlight-text: var(--highlight-text);
+  --color-destructive: var(--destructive);
+  --color-destructive-foreground: var(--destructive-foreground);
+  --color-border: var(--border);
+  --color-input: var(--input);
+  --color-ring: var(--ring);
+
+  --radius-sm: calc(var(--radius) * 0.6);
+  --radius-md: calc(var(--radius) * 0.8);
+  --radius-lg: var(--radius);
+  --radius-xl: calc(var(--radius) * 1.4);
+  --radius-2xl: calc(var(--radius) * 1.8);
+  --radius-3xl: calc(var(--radius) * 2.2);
+  --radius-4xl: calc(var(--radius) * 2.6);
 }
 
-@media (prefers-color-scheme: dark) {
-  :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
+@layer base {
+  * {
+    @apply border-border outline-ring/50;
   }
-}
-
-body {
-  background: var(--background);
-  color: var(--foreground);
-  font-family: Arial, Helvetica, sans-serif;
+  html {
+    @apply font-sans;
+    /* Lets native controls and scrollbars follow the active theme. */
+    color-scheme: light;
+  }
+  html.dark {
+    color-scheme: dark;
+  }
+  body {
+    @apply bg-background text-foreground;
+  }
+  button:not(:disabled),
+  [role="button"]:not(:disabled) {
+    cursor: pointer;
+  }
 }
