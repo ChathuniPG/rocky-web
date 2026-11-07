@@ -8,6 +8,20 @@ import { Toaster } from "@/components/ui/sonner";
 import { TooltipProvider } from "@/components/ui/tooltip";
 import { I18nProvider } from "@/i18n/i18n-provider";
 import { defaultLocale } from "@/i18n/translate";
+import { isApiError, isSessionExpiredError } from "@/lib/api/errors";
+
+const MAX_QUERY_RETRIES = 2;
+
+/**
+ * Retries only failures that may pass on their own (network errors, 5xx).
+ * A 4xx (bad input, not found, rate limited) gives the same answer again, and an
+ * ended session is already redirecting to login.
+ */
+function shouldRetryQuery(failureCount: number, error: Error): boolean {
+  if (isSessionExpiredError(error)) return false;
+  if (isApiError(error) && error.statusCode >= 400 && error.statusCode < 500) return false;
+  return failureCount < MAX_QUERY_RETRIES;
+}
 
 /** Default TanStack Query settings for all server data. */
 function createQueryClient(): QueryClient {
@@ -16,8 +30,13 @@ function createQueryClient(): QueryClient {
       queries: {
         // Avoids an immediate refetch right after hydration or a tab switch.
         staleTime: 30_000,
-        retry: 1,
+        retry: shouldRetryQuery,
+        // Default, stated on purpose: returning to the tab refreshes stale feeds and
+        // notifications. Queries that must not refetch opt out individually.
+        refetchOnWindowFocus: true,
       },
+      // A retried mutation could act twice (two posts, two comments).
+      mutations: { retry: false },
     },
   });
 }

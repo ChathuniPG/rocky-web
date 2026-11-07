@@ -8,6 +8,10 @@ const t = getTranslations();
 
 export const metadata: Metadata = { title: t("pages.notifications.title") };
 
+// Rendered only after AuthGate confirms the session in the browser (ADR-013), so
+// Next.js cannot prerender this page to validate instant navigation.
+export const instant = false;
+
 /** Notifications list (FR-NOTF-02..03). Placeholder. */
 export default function NotificationsPage() {
   return (
