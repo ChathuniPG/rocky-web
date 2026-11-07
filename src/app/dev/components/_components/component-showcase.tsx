@@ -14,7 +14,8 @@ import { toast } from "sonner";
 
 import { EmptyState } from "@/components/empty-state";
 import { SearchInput } from "@/components/search-input";
-import { ListRowSkeleton, PostCardSkeleton, ProfileHeaderSkeleton } from "@/components/skeletons";
+import { ListRowSkeleton, ProfileHeaderSkeleton } from "@/components/skeletons";
+import { FeedPostSkeleton } from "@/features/feed/feed-post-skeleton";
 import { ThemeToggle } from "@/components/theme-toggle";
 import { Badge } from "@/components/ui/badge";
 import { Button, type ButtonProps } from "@/components/ui/button";
@@ -357,7 +358,9 @@ function SkeletonSection() {
   return (
     <Demo title="Skeletons">
       <div className="grid gap-6 lg:grid-cols-2">
-        <PostCardSkeleton />
+        <div className="h-[32rem]">
+          <FeedPostSkeleton />
+        </div>
         <div className="space-y-4">
           <ProfileHeaderSkeleton />
           <div className="divide-y">

@@ -1,9 +1,8 @@
 import type { Metadata } from "next";
 import { Suspense } from "react";
 
-import { PageHeader } from "@/components/page-header";
-import { PostCardSkeleton } from "@/components/skeletons";
 import { PostDetail } from "@/features/posts/post-detail";
+import { PostDetailSkeleton } from "@/features/posts/post-detail-skeleton";
 import { getTranslations } from "@/i18n/server";
 
 const t = getTranslations();
@@ -16,14 +15,15 @@ export const instant = false;
 
 /**
  * A single post with its comments, so shared links work (FR-POST-06,
- * FR-FEED-06). The post id is only known at request time, so that part streams
- * in behind a skeleton (cacheComponents); the post itself loads in the browser.
+ * FR-POST-07, FR-FEED-06). The post id is only known at request time, so that
+ * part streams in behind a skeleton (cacheComponents); the post itself loads in
+ * the browser. The media fills the page, so the page title is visually hidden.
  */
 export default function PostPage({ params }: PageProps<"/posts/[id]">) {
   return (
     <>
-      <PageHeader title={t("pages.post.title")} />
-      <Suspense fallback={<PostCardSkeleton />}>
+      <h1 className="sr-only">{t("pages.post.title")}</h1>
+      <Suspense fallback={<PostDetailSkeleton />}>
         <PostDetailForParams params={params} />
       </Suspense>
     </>

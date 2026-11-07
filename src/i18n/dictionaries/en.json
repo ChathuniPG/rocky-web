@@ -105,8 +105,10 @@
     "actions": {
       "like": "Like. Likes: {count}",
       "comments": "Comments: {count}",
-      "share": "Copy link to post",
-      "save": "Save post"
+      "share": "Share: copy link to post",
+      "save": "Save post",
+      "saveLabel": "Save",
+      "shareLabel": "Share"
     },
     "toast": {
       "likeFailed": "Couldn’t like the post.",
@@ -117,6 +119,11 @@
       "unsaveFailed": "Couldn’t remove the post from saved.",
       "linkCopied": "Link copied to clipboard.",
       "linkCopyFailed": "Couldn’t copy the link. Your browser blocked clipboard access."
+    },
+    "authorProfile": "{name}’s profile",
+    "caption": {
+      "more": "more",
+      "less": "less"
     }
   },
   "postPage": {
@@ -124,7 +131,9 @@
     "errorTitle": "We couldn’t load this post",
     "notFoundTitle": "Post not found",
     "notFoundDescription": "It may have been deleted, or the link may be wrong.",
-    "backHome": "Back to Home"
+    "backHome": "Back to Home",
+    "back": "Back",
+    "panelLabel": "Post details and comments"
   },
   "postOwner": {
     "menu": "Post options",
