@@ -7,6 +7,16 @@
     "underConstruction": "This page is under construction.",
     "retry": "Try again"
   },
+  "errors": {
+    "network": "Can’t reach the server. Check your connection and try again.",
+    "notFound": "This item no longer exists.",
+    "tooManyRequests": "You’re doing that too often. Please wait a moment and try again.",
+    "serviceUnavailable": "The service is temporarily unavailable. Please try again shortly.",
+    "unknown": "Something went wrong. Please try again."
+  },
+  "list": {
+    "pageError": "Couldn’t load more."
+  },
   "nav": {
     "mainNavigation": "Main navigation",
     "skipToContent": "Skip to main content",
@@ -45,11 +55,39 @@
     "suggestedTitle": "Suggested for you",
     "suggestedEmpty": "Suggested users will appear here."
   },
+  "feed": {
+    "label": "Posts",
+    "loading": "Loading posts…",
+    "refresh": "Refresh feed",
+    "loadMore": "Load more posts",
+    "end": "You’re all caught up",
+    "errorTitle": "We couldn’t load your feed"
+  },
+  "post": {
+    "imageAlt": "Photo posted by {name}",
+    "videoLabel": "Video posted by {name}",
+    "actions": {
+      "like": "Like. Likes: {count}",
+      "comments": "Comments: {count}",
+      "share": "Copy link to post",
+      "save": "Save post"
+    },
+    "toast": {
+      "likeFailed": "Couldn’t like the post.",
+      "unlikeFailed": "Couldn’t remove your like.",
+      "saved": "Post saved.",
+      "unsaved": "Post removed from saved.",
+      "saveFailed": "Couldn’t save the post.",
+      "unsaveFailed": "Couldn’t remove the post from saved.",
+      "linkCopied": "Link copied to clipboard.",
+      "linkCopyFailed": "Couldn’t copy the link. Your browser blocked clipboard access."
+    }
+  },
   "pages": {
     "home": {
       "title": "Home",
-      "emptyTitle": "Your feed is on its way",
-      "emptyDescription": "Posts from people you follow will appear here."
+      "emptyTitle": "No posts yet",
+      "emptyDescription": "When people share photos and videos, they’ll appear here."
     },
     "search": {
       "title": "Search"

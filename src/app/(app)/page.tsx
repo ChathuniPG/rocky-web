@@ -1,8 +1,6 @@
-import { HouseIcon } from "lucide-react";
 import type { Metadata } from "next";
 
-import { EmptyState } from "@/components/empty-state";
-import { PageHeader } from "@/components/page-header";
+import { HomeFeed } from "@/features/feed/home-feed";
 import { getTranslations } from "@/i18n/server";
 
 const t = getTranslations();
@@ -13,16 +11,7 @@ export const metadata: Metadata = { title: t("pages.home.title") };
 // Next.js cannot prerender this page to validate instant navigation.
 export const instant = false;
 
-/** Home feed (FR-FEED-01). Placeholder until the feed issue. */
+/** Home feed (FR-FEED-01 to FR-FEED-08). The feed itself is a client component. */
 export default function HomePage() {
-  return (
-    <>
-      <PageHeader title={t("pages.home.title")} />
-      <EmptyState
-        icon={HouseIcon}
-        title={t("pages.home.emptyTitle")}
-        description={t("pages.home.emptyDescription")}
-      />
-    </>
-  );
+  return <HomeFeed />;
 }
