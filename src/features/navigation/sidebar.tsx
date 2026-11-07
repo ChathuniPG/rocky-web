@@ -6,10 +6,10 @@ import { Suspense, useMemo, type ReactNode } from "react";
 
 import { ThemeToggle } from "@/components/theme-toggle";
 import { Badge } from "@/components/ui/badge";
-import { Dialog, DialogTrigger } from "@/components/ui/dialog";
+import { DialogTrigger } from "@/components/ui/dialog";
 import { Tooltip, TooltipContent, TooltipTrigger } from "@/components/ui/tooltip";
 import { useCurrentUser } from "@/features/auth/auth-provider";
-import { CreatePostDialogContent } from "@/features/posts/create-post-dialog-content";
+import { CreatePostDialog } from "@/features/posts/create-post-dialog";
 import { useTranslations } from "@/i18n/i18n-provider";
 
 import { getNavItems, isNavItemActive, type NavItem } from "./nav-items";
@@ -140,15 +140,14 @@ function NavEntry({
   if (item.kind === "create-post") {
     // Post opens a dialog instead of navigating (design.md 7.1).
     return (
-      <Dialog>
+      <CreatePostDialog>
         <CollapsedTooltip label={label}>
           <DialogTrigger className={navEntryClasses}>
             <Icon aria-hidden="true" />
             <span className={navLabelClasses}>{label}</span>
           </DialogTrigger>
         </CollapsedTooltip>
-        <CreatePostDialogContent />
-      </Dialog>
+      </CreatePostDialog>
     );
   }
 

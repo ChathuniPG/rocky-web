@@ -26,6 +26,9 @@ export type SaveState = ApiSchemas["SaveStateDto"];
 export type Comment = ApiSchemas["CommentResponseDto"];
 export type CommentPage = ApiSchemas["CommentPageDto"];
 export type Upload = ApiSchemas["UploadResponseDto"];
+/** What an upload is for (POST /uploads `purpose`); decides the allowed types and sizes. */
+export type UploadPurpose =
+  ApiPaths["/api/v1/uploads"]["post"]["requestBody"]["content"]["multipart/form-data"]["purpose"];
 export type Notification = ApiSchemas["NotificationResponseDto"];
 export type NotificationPage = ApiSchemas["NotificationPageDto"];
 export type NotificationType = ApiSchemas["NotificationType"];

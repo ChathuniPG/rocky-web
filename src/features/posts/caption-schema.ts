@@ -16,8 +16,8 @@ export const captionSchema = z
   .max(CAPTION_MAX_LENGTH, { error: "validation.captionTooLong" })
   .trim();
 
-/** The edit-caption form (FR-POST-04). */
-export const editCaptionFormSchema = z.object({ caption: captionSchema });
+/** A form with just a caption: editing (FR-POST-04) and creating a post (FR-POST-01). */
+export const captionFormSchema = z.object({ caption: captionSchema });
 
-/** Values of the edit-caption form. */
-export type EditCaptionFormValues = z.infer<typeof editCaptionFormSchema>;
+/** Values of a caption form. */
+export type CaptionFormValues = z.infer<typeof captionFormSchema>;

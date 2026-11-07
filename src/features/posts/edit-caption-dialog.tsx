@@ -20,11 +20,7 @@ import { useTranslations } from "@/i18n/i18n-provider";
 import type { TranslationKey } from "@/i18n/translate";
 import type { Post } from "@/lib/api/types";
 
-import {
-  CAPTION_MAX_LENGTH,
-  editCaptionFormSchema,
-  type EditCaptionFormValues,
-} from "./caption-schema";
+import { CAPTION_MAX_LENGTH, captionFormSchema, type CaptionFormValues } from "./caption-schema";
 import { useEditCaption } from "./use-post-owner-mutations";
 
 type EditCaptionDialogProps = {
@@ -87,8 +83,8 @@ function EditCaptionForm({
     handleSubmit,
     control,
     formState: { errors },
-  } = useForm<EditCaptionFormValues, unknown, EditCaptionFormValues>({
-    resolver: zodResolver(editCaptionFormSchema),
+  } = useForm<CaptionFormValues, unknown, CaptionFormValues>({
+    resolver: zodResolver(captionFormSchema),
     mode: "onChange",
     defaultValues: { caption: initialCaption },
   });
