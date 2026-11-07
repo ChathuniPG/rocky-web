@@ -1,26 +1,32 @@
-import Link from "next/link";
+import type { ReactNode } from "react";
 
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 
-type AuthPlaceholderCardProps = {
+import { AuthSwitchLink } from "./auth-switch-link";
+
+type AuthFormCardProps = {
   title: string;
   description: string;
+  /** The form itself (a client component). */
+  children: ReactNode;
   switchPrompt: string;
   switchLink: string;
   switchHref: "/login" | "/signup";
 };
 
 /**
- * Card shown on /login and /signup until the forms are built, with a link
- * between the two pages. Not a route: only `page.tsx` files become routes.
+ * Card around the login and sign-up forms: heading, short description, the
+ * form, and a link to the other form. A server component; only the form and
+ * the link are client components.
  */
-export function AuthPlaceholderCard({
+export function AuthFormCard({
   title,
   description,
+  children,
   switchPrompt,
   switchLink,
   switchHref,
-}: AuthPlaceholderCardProps) {
+}: AuthFormCardProps) {
   return (
     <Card>
       <CardHeader>
@@ -29,15 +35,10 @@ export function AuthPlaceholderCard({
         </CardTitle>
         <CardDescription>{description}</CardDescription>
       </CardHeader>
-      <CardContent>
+      <CardContent className="space-y-6">
+        {children}
         <p className="text-sm text-muted-foreground">
-          {switchPrompt}{" "}
-          <Link
-            href={switchHref}
-            className="rounded-sm font-medium text-primary underline-offset-4 outline-none hover:underline focus-visible:ring-3 focus-visible:ring-ring"
-          >
-            {switchLink}
-          </Link>
+          {switchPrompt} <AuthSwitchLink href={switchHref}>{switchLink}</AuthSwitchLink>
         </p>
       </CardContent>
     </Card>

@@ -1,22 +1,27 @@
 import type { Metadata } from "next";
 
+import { AuthFormCard } from "@/features/auth/auth-form-card";
+import { SignupForm } from "@/features/auth/signup-form";
 import { getTranslations } from "@/i18n/server";
-
-import { AuthPlaceholderCard } from "../auth-placeholder-card";
 
 const t = getTranslations();
 
 export const metadata: Metadata = { title: t("pages.signup.title") };
 
-/** Sign-up (FR-AUTH-01..02). Placeholder until the auth issue. */
+/**
+ * Sign-up (FR-AUTH-01..02). A server component for the static parts; the form
+ * is a client component because it handles input and submission.
+ */
 export default function SignupPage() {
   return (
-    <AuthPlaceholderCard
+    <AuthFormCard
       title={t("pages.signup.title")}
       description={t("pages.signup.description")}
       switchPrompt={t("pages.signup.switchPrompt")}
       switchLink={t("pages.signup.switchLink")}
       switchHref="/login"
-    />
+    >
+      <SignupForm />
+    </AuthFormCard>
   );
 }

@@ -74,13 +74,13 @@
     },
     "login": {
       "title": "Log in",
-      "description": "The login form is coming soon.",
+      "description": "Welcome back. Log in to see what’s new.",
       "switchPrompt": "New here?",
       "switchLink": "Create an account"
     },
     "signup": {
       "title": "Sign up",
-      "description": "The sign-up form is coming soon.",
+      "description": "Create an account to share short videos and photos.",
       "switchPrompt": "Already have an account?",
       "switchLink": "Log in"
     }
@@ -95,6 +95,56 @@
       "action": "Log out",
       "success": "You've been logged out.",
       "error": "Couldn't log out. Check your connection and try again."
+    },
+    "fields": {
+      "email": "Email",
+      "password": "Password",
+      "username": "Username",
+      "displayName": "Display name"
+    },
+    "hints": {
+      "password": "At least 8 characters, including a letter and a number.",
+      "username": "3–30 characters: lowercase letters, numbers, underscores and periods."
+    },
+    "password": {
+      "show": "Show password",
+      "hide": "Hide password"
+    },
+    "login": {
+      "submit": "Log in",
+      "success": "Welcome back, {name}!"
+    },
+    "signup": {
+      "submit": "Create account",
+      "success": "Welcome to R.O.C.K.Y., {name}!"
+    },
+    "validation": {
+      "emailRequired": "Enter your email address.",
+      "emailInvalid": "Enter a valid email address, like name@example.com.",
+      "emailTooLong": "Email addresses can be at most 255 characters.",
+      "passwordRequired": "Enter your password.",
+      "passwordTooShort": "Use at least 8 characters.",
+      "passwordTooLong": "Passwords can be at most 128 characters.",
+      "passwordLetterAndNumber": "Include at least one letter and one number.",
+      "usernameRequired": "Choose a username.",
+      "usernameTooShort": "Usernames need at least 3 characters.",
+      "usernameTooLong": "Usernames can be at most 30 characters.",
+      "usernameCharacters": "Use only lowercase letters, numbers, underscores and periods.",
+      "usernameReserved": "This username is reserved. Please choose another.",
+      "displayNameRequired": "Enter a display name.",
+      "displayNameTooLong": "Display names can be at most 50 characters."
+    },
+    "errors": {
+      "invalidCredentials": "Incorrect email or password.",
+      "emailTaken": "An account with this email already exists. Try logging in instead.",
+      "usernameTaken": "This username is taken. Try another one.",
+      "conflict": "An account with these details already exists.",
+      "validation": "Some details weren’t accepted. Check the form and try again.",
+      "accountDisabled": "This account has been disabled.",
+      "tooManyAttempts": "Too many attempts. Please wait a minute and try again.",
+      "serviceUnavailable": "The service is temporarily unavailable. Please try again shortly.",
+      "network": "Can’t reach the server. Check your connection and try again.",
+      "unknown": "Something went wrong. Please try again."
     }
   }
 }
