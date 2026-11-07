@@ -8,6 +8,7 @@ import { Button } from "@/components/ui/button";
 import { XIcon } from "lucide-react";
 
 import { useTranslations } from "@/i18n/i18n-provider";
+import { SuspendCoordinatedVideos } from "@/features/media/suspend-coordinated-videos";
 
 function Dialog({ ...props }: React.ComponentProps<typeof DialogPrimitive.Root>) {
   return <DialogPrimitive.Root data-slot="dialog" {...props} />;
@@ -27,6 +28,7 @@ function DialogClose({ ...props }: React.ComponentProps<typeof DialogPrimitive.C
 
 function DialogOverlay({
   className,
+  children,
   ...props
 }: React.ComponentProps<typeof DialogPrimitive.Overlay>) {
   return (
@@ -37,7 +39,12 @@ function DialogOverlay({
         className,
       )}
       {...props}
-    />
+    >
+      {/* Radix mounts the overlay only while a modal dialog is open: pause the feed behind it (FR-FEED-09).
+          Known limit: a coordinated VideoPlayer inside the dialog would be paused too. */}
+      <SuspendCoordinatedVideos />
+      {children}
+    </DialogPrimitive.Overlay>
   );
 }
 

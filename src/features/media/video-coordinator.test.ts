@@ -95,4 +95,97 @@ describe("createVideoCoordinator", () => {
     expect(coordinator.activeId()).toBe("b");
     expect(log).toEqual(["play a", "pause a"]);
   });
+
+  describe("suspend", () => {
+    it("pauses the active video and plays the most visible one again on release", () => {
+      const { coordinator, log } = setup(["a"]);
+      coordinator.setVisibility("a", 1);
+      const release = coordinator.suspend();
+      expect(coordinator.activeId()).toBeNull();
+      release();
+      expect(coordinator.activeId()).toBe("a");
+      expect(log).toEqual(["play a", "pause a", "play a"]);
+    });
+
+    it("resumes only when the outermost of nested suspensions is released", () => {
+      const { coordinator, log } = setup(["a"]);
+      coordinator.setVisibility("a", 1);
+      const releaseOuter = coordinator.suspend();
+      const releaseInner = coordinator.suspend();
+      releaseInner();
+      expect(coordinator.activeId()).toBeNull();
+      releaseOuter();
+      expect(coordinator.activeId()).toBe("a");
+      expect(log).toEqual(["play a", "pause a", "play a"]);
+    });
+
+    it("resumes regardless of the order nested suspensions are released in", () => {
+      const { coordinator } = setup(["a"]);
+      coordinator.setVisibility("a", 1);
+      const releaseOuter = coordinator.suspend();
+      const releaseInner = coordinator.suspend();
+      releaseOuter();
+      expect(coordinator.activeId()).toBeNull();
+      releaseInner();
+      expect(coordinator.activeId()).toBe("a");
+    });
+
+    it("ignores a release called twice, so it can't end another suspension", () => {
+      const { coordinator, log } = setup(["a"]);
+      coordinator.setVisibility("a", 1);
+      const releaseOuter = coordinator.suspend();
+      const releaseInner = coordinator.suspend();
+      releaseInner();
+      releaseInner();
+      expect(coordinator.activeId()).toBeNull();
+      releaseOuter();
+      expect(coordinator.activeId()).toBe("a");
+      expect(log).toEqual(["play a", "pause a", "play a"]);
+    });
+
+    it("doesn't autoplay videos registered or scrolled into view while suspended", () => {
+      const { coordinator, log } = setup(["a"]);
+      coordinator.setVisibility("a", 1);
+      const release = coordinator.suspend();
+      coordinator.register("b", fakeVideo(log, "b"));
+      coordinator.setVisibility("b", 1);
+      coordinator.setVisibility("a", 0.2);
+      expect(coordinator.activeId()).toBeNull();
+      release();
+      // Visibility kept being recorded, so the video now in view is the one that plays.
+      expect(coordinator.activeId()).toBe("b");
+      expect(log).toEqual(["play a", "pause a", "play b"]);
+    });
+
+    it("plays nothing on release while the tab is hidden, and resumes when it is visible", () => {
+      const { coordinator, log } = setup(["a"]);
+      coordinator.setVisibility("a", 1);
+      const release = coordinator.suspend();
+      coordinator.setPageVisible(false);
+      release();
+      expect(coordinator.activeId()).toBeNull();
+      coordinator.setPageVisible(true);
+      expect(coordinator.activeId()).toBe("a");
+      expect(log).toEqual(["play a", "pause a", "play a"]);
+    });
+
+    it("stays suspended when the tab becomes visible again", () => {
+      const { coordinator } = setup(["a"]);
+      coordinator.setVisibility("a", 1);
+      const release = coordinator.suspend();
+      coordinator.setPageVisible(false);
+      coordinator.setPageVisible(true);
+      expect(coordinator.activeId()).toBeNull();
+      release();
+      expect(coordinator.activeId()).toBe("a");
+    });
+
+    it("does nothing visible when no video is playing", () => {
+      const { coordinator, log } = setup(["a"]);
+      const release = coordinator.suspend();
+      release();
+      expect(coordinator.activeId()).toBeNull();
+      expect(log).toEqual([]);
+    });
+  });
 });

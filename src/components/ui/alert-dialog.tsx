@@ -5,6 +5,7 @@ import { cn } from "@/lib/utils";
 import { AlertDialog as AlertDialogPrimitive } from "radix-ui";
 
 import { Button } from "@/components/ui/button";
+import { SuspendCoordinatedVideos } from "@/features/media/suspend-coordinated-videos";
 
 function AlertDialog({ ...props }: React.ComponentProps<typeof AlertDialogPrimitive.Root>) {
   return <AlertDialogPrimitive.Root data-slot="alert-dialog" {...props} />;
@@ -22,6 +23,7 @@ function AlertDialogPortal({ ...props }: React.ComponentProps<typeof AlertDialog
 
 function AlertDialogOverlay({
   className,
+  children,
   ...props
 }: React.ComponentProps<typeof AlertDialogPrimitive.Overlay>) {
   return (
@@ -32,7 +34,12 @@ function AlertDialogOverlay({
         className,
       )}
       {...props}
-    />
+    >
+      {/* Radix mounts the overlay only while a modal dialog is open: pause the feed behind it (FR-FEED-09).
+          Known limit: a coordinated VideoPlayer inside the dialog would be paused too. */}
+      <SuspendCoordinatedVideos />
+      {children}
+    </AlertDialogPrimitive.Overlay>
   );
 }
 
