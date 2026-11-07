@@ -11,6 +11,17 @@ const serverEnvSchema = z.object({
     .url({ protocol: /^https?$/ })
     .default("http://127.0.0.1:4000")
     .transform((url) => url.replace(/\/+$/, "")),
+  // The Firebase Storage bucket that holds post media and avatars, e.g.
+  // "rocky.firebasestorage.app". next.config.ts uses it to restrict next/image to
+  // this bucket's objects only. Not a secret, but there is no reason to ship it to
+  // the browser, so it stays server-only.
+  FIREBASE_STORAGE_BUCKET: z
+    .string()
+    .trim()
+    .regex(
+      /^[a-z0-9][a-z0-9._-]{1,220}[a-z0-9]$/,
+      "Expected a bucket name, without gs:// or a path",
+    ),
 });
 
 /** Validated server-only environment variables. */
