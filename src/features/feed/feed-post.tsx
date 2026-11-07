@@ -26,8 +26,12 @@ export function FeedPost({ post, eagerMedia = false, className }: FeedPostProps)
   return (
     <article aria-labelledby={authorLinkId} className={cn(feedPostLayoutClasses, className)}>
       <div className={cn(feedMediaFrameClasses, "bg-black")}>
-        <PostMedia post={post} sizes={FEED_MEDIA_SIZES} eager={eagerMedia} />
-        <PostCaptionOverlay post={post} authorLinkId={authorLinkId} />
+        <PostMedia
+          post={post}
+          sizes={FEED_MEDIA_SIZES}
+          eager={eagerMedia}
+          overlay={<PostCaptionOverlay post={post} authorLinkId={authorLinkId} />}
+        />
       </div>
       <PostActions post={post} variant="feed" linkComments className="md:pb-2" />
     </article>

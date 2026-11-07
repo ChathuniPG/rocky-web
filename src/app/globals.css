@@ -162,3 +162,26 @@
     cursor: pointer;
   }
 }
+
+/*
+ * A dark halo around white text drawn over media (design.md 7.2): a tight
+ * outline (the same 1px shadow stacked, which makes it nearly opaque) that
+ * separates each glyph from even a pure white pixel, plus a soft shadow for
+ * depth. It replaces a dark band behind the text, so the media stays
+ * unobscured.
+ */
+@utility media-text-halo {
+  text-shadow:
+    0 0 1px rgb(0 0 0),
+    0 0 1px rgb(0 0 0),
+    0 0 2px rgb(0 0 0 / 0.8),
+    0 1px 4px rgb(0 0 0 / 0.55);
+}
+
+/* Scrolls without showing a scrollbar, e.g. an expanded caption over media (TikTok has none). */
+@utility scrollbar-none {
+  scrollbar-width: none;
+  &::-webkit-scrollbar {
+    display: none;
+  }
+}

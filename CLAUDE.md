@@ -70,6 +70,13 @@ The developer is new to React and Next.js and has a Java / Spring Boot backgroun
 
 Before declaring a step complete, run: npm run lint, npm run typecheck, npm test, npm run build. Also verify the change under `next dev` (open every affected page and check the browser console and the dev overlay for errors): some checks, such as cacheComponents instant-navigation validation, run only in development, so a passing build is not enough. Describe what to verify manually in the browser.
 
+## Test data
+
+- Track every piece of test data you create during a session (accounts, posts, comments, uploads), with its id, as you create it.
+- Keep generated credentials in your scratchpad until cleanup is done; never regenerate or overwrite saved credentials. Session cookies do not survive a browser restart, so you need the saved credentials to log in again for cleanup.
+- Clean up all test data before you finish. The API has no endpoint for deleting a user, so an account you create stays behind: list it in your report.
+- If any cleanup fails, report it clearly: what is left, its ids, and how the developer can remove it.
+
 ## Security
 
 - Never read, print or modify .env files.
