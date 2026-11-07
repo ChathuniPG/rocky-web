@@ -1,6 +1,6 @@
 import type { InfiniteData, QueryClient } from "@tanstack/react-query";
 
-import type { Post, PostPage } from "@/lib/api/types";
+import type { Post, PostAuthor, PostPage } from "@/lib/api/types";
 
 import { postKeys } from "./post-query-keys";
 
@@ -111,4 +111,33 @@ export function findPostInCache(queryClient: QueryClient, postId: string): Post 
     }
   }
   return undefined;
+}
+
+/**
+ * Applies `author` to every post by that author inside any cached data shape,
+ * e.g. after they change their name or avatar (FR-PROF-04). Same reference
+ * when no post by them is there.
+ */
+export function mapAuthorInData(data: unknown, author: PostAuthor): unknown {
+  const withAuthor = (post: Post): Post => ({ ...post, author: { ...post.author, ...author } });
+  if (isPost(data)) return data.author.id === author.id ? withAuthor(data) : data;
+  if (!isPostPages(data)) return data;
+
+  let changed = false;
+  const pages = data.pages.map((page) => {
+    if (!page.items.some((post) => post.author.id === author.id)) return page;
+    changed = true;
+    return {
+      ...page,
+      items: page.items.map((post) => (post.author.id === author.id ? withAuthor(post) : post)),
+    };
+  });
+  return changed ? { ...data, pages } : data;
+}
+
+/** Updates the author on every cached post by them: feed, post pages, grids. */
+export function updateAuthorInCache(queryClient: QueryClient, author: PostAuthor): void {
+  queryClient.setQueriesData<unknown>({ queryKey: postKeys.all }, (data: unknown) =>
+    mapAuthorInData(data, author),
+  );
 }

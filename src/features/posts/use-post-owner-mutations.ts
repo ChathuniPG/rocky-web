@@ -3,6 +3,8 @@
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { toast } from "sonner";
 
+import { useCurrentUser } from "@/features/auth/auth-provider";
+import { userKeys } from "@/features/users/user-query-keys";
 import { useTranslations } from "@/i18n/i18n-provider";
 import { api } from "@/lib/api/client";
 import { isApiError, isSessionExpiredError } from "@/lib/api/errors";
@@ -42,6 +44,8 @@ export function useEditCaption(postId: string) {
  */
 export function useDeletePost(postId: string) {
   const t = useTranslations();
+  const queryClient = useQueryClient();
+  const { username } = useCurrentUser();
 
   return useMutation({
     mutationFn: async () => {
@@ -52,6 +56,8 @@ export function useDeletePost(postId: string) {
       }
     },
     onSuccess: () => {
+      // The owner's profile header shows the post count.
+      void queryClient.invalidateQueries({ queryKey: userKeys.profile(username) });
       toast.success(t("deletePost.success"));
     },
     onError: (error) => {

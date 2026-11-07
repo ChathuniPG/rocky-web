@@ -1,9 +1,8 @@
 import type { Metadata } from "next";
 import { Suspense } from "react";
 
-import { ComingSoon } from "@/components/coming-soon";
 import { PageHeader } from "@/components/page-header";
-import { ProfileHeaderSkeleton } from "@/components/skeletons";
+import { ProfileView, ProfileViewSkeleton } from "@/features/profile/profile-view";
 import { getTranslations } from "@/i18n/server";
 
 const t = getTranslations();
@@ -15,22 +14,31 @@ export const metadata: Metadata = { title: t("pages.profile.title") };
 export const instant = false;
 
 /**
- * A user's profile with Posts and Saved tabs (FR-PROF-01..06). Placeholder. The
- * username is only known at request time, so the part that reads it streams in
- * behind a skeleton (cacheComponents).
+ * A user's profile with Posts and Saved tabs (FR-PROF-01..06). The username and
+ * the tab are only known at request time, so the part that reads them streams
+ * in behind a skeleton (cacheComponents); the profile itself loads in the browser.
  */
 export default function ProfilePage({ params }: PageProps<"/u/[username]">) {
   return (
     <>
       <PageHeader title={t("pages.profile.title")} />
-      <Suspense fallback={<ProfileHeaderSkeleton />}>
-        <ProfilePlaceholder params={params} />
+      <Suspense fallback={<ProfileViewSkeleton />}>
+        <ProfileForParams params={params} />
       </Suspense>
     </>
   );
 }
 
-async function ProfilePlaceholder({ params }: Pick<PageProps<"/u/[username]">, "params">) {
+async function ProfileForParams({ params }: Pick<PageProps<"/u/[username]">, "params">) {
   const { username } = await params;
-  return <ComingSoon title={`@${decodeURIComponent(username)}`} />;
+  return <ProfileView username={decodeUsername(username)} />;
+}
+
+/** The URL segment as typed; a malformed escape (e.g. "%E0%A4") can't be a username. */
+function decodeUsername(segment: string): string {
+  try {
+    return decodeURIComponent(segment);
+  } catch {
+    return "";
+  }
 }

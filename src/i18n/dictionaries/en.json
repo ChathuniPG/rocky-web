@@ -22,7 +22,10 @@
   "validation": {
     "commentRequired": "Write a comment first.",
     "commentTooLong": "Comments can be at most {max} characters.",
-    "captionTooLong": "Captions can be at most {max} characters."
+    "captionTooLong": "Captions can be at most {max} characters.",
+    "displayNameRequired": "Enter a display name.",
+    "displayNameTooLong": "Display names can be at most {max} characters.",
+    "bioTooLong": "Bios can be at most {max} characters."
   },
   "nav": {
     "mainNavigation": "Main navigation",
@@ -77,6 +80,72 @@
     "toast": {
       "followFailed": "Couldn’t follow {name}.",
       "unfollowFailed": "Couldn’t unfollow {name}."
+    }
+  },
+  "profile": {
+    "loading": "Loading profile…",
+    "errorTitle": "Couldn’t load this profile",
+    "counts": {
+      "posts": "Posts",
+      "followers": "Followers",
+      "following": "Following"
+    },
+    "tabs": {
+      "label": "Profile content",
+      "posts": "Posts",
+      "saved": "Saved"
+    },
+    "grid": {
+      "loading": "Loading posts…",
+      "errorTitle": "Couldn’t load posts",
+      "loadMore": "Load more posts",
+      "imageTile": "Photo by {name}. Likes: {count}",
+      "videoTile": "Video by {name}. Likes: {count}"
+    },
+    "empty": {
+      "ownPostsTitle": "Share your first post",
+      "ownPostsDescription": "Photos and videos you post will appear here. Use Post in the menu to get started.",
+      "postsTitle": "No posts yet",
+      "postsDescription": "When @{username} shares photos or videos, they’ll appear here.",
+      "savedTitle": "Nothing saved yet",
+      "savedDescription": "Save posts to find them again here. Only you can see what you’ve saved."
+    },
+    "notFound": {
+      "title": "This account doesn’t exist",
+      "description": "Check the username, or search for the person instead.",
+      "action": "Search users"
+    },
+    "message": {
+      "button": "Message",
+      "label": "Message {name}",
+      "failed": "Couldn’t start a conversation."
+    },
+    "edit": {
+      "button": "Edit profile",
+      "title": "Edit profile",
+      "description": "Change how other people see you.",
+      "avatar": "Profile picture",
+      "uploadAvatar": "Upload picture",
+      "changeAvatar": "Change picture",
+      "removeAvatar": "Remove picture",
+      "avatarHint": "JPEG, PNG or WebP, up to 5 MB.",
+      "displayName": "Display name",
+      "bio": "Bio",
+      "bioPlaceholder": "Tell people a little about yourself",
+      "save": "Save",
+      "uploading": "Uploading picture… {percent}%",
+      "uploadProgress": "Picture upload progress",
+      "cancelUpload": "Cancel upload",
+      "uploadCancelled": "Picture upload cancelled.",
+      "success": "Profile updated.",
+      "errors": {
+        "unsupportedType": "Choose a JPEG, PNG or WebP image.",
+        "empty": "This file is empty. Choose another image.",
+        "fileTooLarge": "This image is {size}. Pictures can be at most {max}.",
+        "tooLarge": "This picture is too large. Pictures can be at most 5 MB.",
+        "rejectedFile": "The picture wasn’t accepted.",
+        "rejected": "Your changes weren’t accepted."
+      }
     }
   },
   "avatar": {

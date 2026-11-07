@@ -5,6 +5,7 @@ import type { Profile, UserSearchResult } from "@/lib/api/types";
 
 import {
   applyFollowChangeToData,
+  applyUserEditToData,
   dataContainsUser,
   markFollowingSearchesStale,
   updateFollowInCache,
@@ -179,5 +180,32 @@ describe("markFollowingSearchesStale", () => {
       true,
     );
     expect(cache.find({ queryKey: userKeys.search("a", "all") })?.state.isInvalidated).toBe(false);
+  });
+});
+
+describe("applyUserEditToData", () => {
+  const edit = { id: "a", displayName: "New Name", bio: "New bio", avatarUrl: "https://x/a.png" };
+
+  it("updates the user's profile and search rows", () => {
+    expect(applyUserEditToData(makeProfile("a"), edit)).toMatchObject({
+      displayName: "New Name",
+      bio: "New bio",
+      avatarUrl: "https://x/a.png",
+      followerCount: 10,
+    });
+    const pages = makePages([makeResult("a"), makeResult("b")]);
+    const result = applyUserEditToData(pages, edit) as UserSearchPages;
+    expect(result.pages[0]?.items[0]).toMatchObject({
+      displayName: "New Name",
+      avatarUrl: "https://x/a.png",
+    });
+    expect(result.pages[0]?.items[1]).toBe(pages.pages[0]?.items[1]);
+  });
+
+  it("leaves other users untouched", () => {
+    const profile = makeProfile("b");
+    expect(applyUserEditToData(profile, edit)).toBe(profile);
+    const pages = makePages([makeResult("b")]);
+    expect(applyUserEditToData(pages, edit)).toBe(pages);
   });
 });

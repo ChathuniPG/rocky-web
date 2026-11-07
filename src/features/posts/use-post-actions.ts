@@ -93,6 +93,9 @@ export function useToggleSave(postId: string) {
       updatePostInCache(queryClient, postId, (post) => withSaved(post, state.savedByMe));
       toast.success(t(saved ? "post.toast.saved" : "post.toast.unsaved"));
     },
+    // The saved list (FR-PROF-03) gains or loses this post; its order comes from
+    // the server, so it reloads instead of being patched.
+    onSettled: () => queryClient.invalidateQueries({ queryKey: postKeys.saved() }),
   });
 }
 
