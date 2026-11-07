@@ -22,6 +22,13 @@ export type VideoCoordinator = {
   setVisibility: (id: string, ratio: number) => void;
   /** Whether the browser tab is visible; nothing plays while it is hidden. */
   setPageVisible: (visible: boolean) => void;
+  /**
+   * Pauses every video and stops autoplay until the returned release function
+   * is called, e.g. while a modal dialog is open. Suspensions nest: playback
+   * resumes only when every one of them has been released. Calling a release
+   * function again does nothing.
+   */
+  suspend: () => () => void;
   /** A user started this video by hand: it becomes the active one and the others pause. */
   claim: (id: string) => void;
   /** The id of the video allowed to play, if any. */
@@ -42,9 +49,11 @@ export function createVideoCoordinator(): VideoCoordinator {
   const entries = new Map<string, Entry>();
   let pageVisible = true;
   let active: string | null = null;
+  // A count, not a flag, so a dialog opened from another dialog doesn't resume playback when it closes.
+  let suspensions = 0;
 
   function mostVisibleId(): string | null {
-    if (!pageVisible) return null;
+    if (!pageVisible || suspensions > 0) return null;
     // The playing video wins ties, so two equally visible videos don't keep swapping.
     const current = active === null ? undefined : entries.get(active);
     let bestId: string | null = current && current.ratio >= AUTOPLAY_VISIBILITY ? active : null;
@@ -89,6 +98,18 @@ export function createVideoCoordinator(): VideoCoordinator {
     setPageVisible(visible) {
       pageVisible = visible;
       activate(mostVisibleId());
+    },
+    suspend() {
+      suspensions += 1;
+      activate(null);
+      let released = false;
+      return () => {
+        // Effect cleanups can run more than once (StrictMode, Activity); release only once.
+        if (released) return;
+        released = true;
+        suspensions -= 1;
+        activate(mostVisibleId());
+      };
     },
     claim(id) {
       if (!entries.has(id)) return;
