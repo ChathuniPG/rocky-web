@@ -154,3 +154,41 @@ export function markFollowingSearchesStale(queryClient: QueryClient): Promise<vo
     refetchType: "none",
   });
 }
+
+/** The parts of a user that an Edit Profile changes (FR-PROF-04). */
+export type EditableUserFields = Pick<Profile, "id" | "displayName" | "bio" | "avatarUrl">;
+
+/**
+ * Applies an edited user's display name, bio and avatar to any cached data
+ * shape: their profile and their rows in search results. Same reference when
+ * nothing changes; unknown shapes are returned untouched.
+ */
+export function applyUserEditToData(data: unknown, user: EditableUserFields): unknown {
+  if (isProfile(data)) {
+    if (data.id !== user.id) return data;
+    return { ...data, displayName: user.displayName, bio: user.bio, avatarUrl: user.avatarUrl };
+  }
+  if (!isUserSearchPages(data)) return data;
+
+  let changed = false;
+  const pages = data.pages.map((page) => {
+    if (!page.items.some((item) => item.id === user.id)) return page;
+    changed = true;
+    return {
+      ...page,
+      items: page.items.map((item) =>
+        item.id === user.id
+          ? { ...item, displayName: user.displayName, avatarUrl: user.avatarUrl }
+          : item,
+      ),
+    };
+  });
+  return changed ? { ...data, pages } : data;
+}
+
+/** Updates every cached copy of a user after they edit their profile (FR-PROF-04). */
+export function updateUserInCache(queryClient: QueryClient, user: EditableUserFields): void {
+  queryClient.setQueriesData<unknown>({ queryKey: userKeys.all }, (data: unknown) =>
+    applyUserEditToData(data, user),
+  );
+}

@@ -5,6 +5,7 @@ import type { Post } from "@/lib/api/types";
 
 import {
   findPostInCache,
+  mapAuthorInData,
   mapPostInData,
   removePostFromCache,
   removePostFromData,
@@ -151,5 +152,35 @@ describe("cache helpers on a QueryClient", () => {
     const queryClient = seededClient();
     expect(findPostInCache(queryClient, "b")?.id).toBe("b");
     expect(findPostInCache(queryClient, "missing")).toBeUndefined();
+  });
+});
+
+describe("mapAuthorInData", () => {
+  const author = {
+    id: "author-1",
+    username: "alice",
+    displayName: "Alice B",
+    avatarUrl: "https://x/a.png",
+  };
+
+  it("updates every post by the author and keeps others", () => {
+    const other = makePost("b", {
+      author: { id: "author-2", username: "bob", displayName: "Bob", avatarUrl: null },
+    });
+    const data = makePages([makePost("a"), other], [makePost("c")]);
+    const result = mapAuthorInData(data, author) as PostPages;
+
+    expect(result.pages[0]?.items[0]?.author).toEqual(author);
+    expect(result.pages[0]?.items[1]).toBe(other);
+    expect(result.pages[1]?.items[0]?.author.displayName).toBe("Alice B");
+  });
+
+  it("updates a single post by the author", () => {
+    expect(mapAuthorInData(makePost("a"), author)).toMatchObject({ author });
+  });
+
+  it("returns the same reference when the author has no post there", () => {
+    const data = makePages([makePost("a")]);
+    expect(mapAuthorInData(data, { ...author, id: "author-9" })).toBe(data);
   });
 });
