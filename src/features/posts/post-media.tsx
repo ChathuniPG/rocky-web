@@ -6,54 +6,62 @@ import { useTranslations } from "@/i18n/i18n-provider";
 import type { Post } from "@/lib/api/types";
 import { cn } from "@/lib/utils";
 
-// The content column is at most 672px wide (max-w-2xl) minus the card padding;
-// below that the card spans the viewport. Lets next/image pick a fitting size.
-const IMAGE_SIZES = "(min-width: 704px) 640px, 100vw";
+/*
+ * `sizes` hints for next/image, so it picks a fitting width. The feed's 9:16
+ * frame is sized by the viewport height, so it is never wider than about 800px;
+ * the post page's media pane takes the space left of the comments panel.
+ */
+/** Image `sizes` for the feed's media frame (FR-FEED-10). */
+export const FEED_MEDIA_SIZES = "(min-width: 1536px) 800px, (min-width: 768px) 45vw, 100vw";
+/** Image `sizes` for the post page's media pane (FR-POST-07). */
+export const POST_PAGE_MEDIA_SIZES = "(min-width: 1024px) 60vw, 100vw";
 
 type PostMediaProps = {
   post: Pick<Post, "mediaUrl" | "mediaType" | "author">;
+  /** See FEED_MEDIA_SIZES and POST_PAGE_MEDIA_SIZES. */
+  sizes: string;
   /** Load the image right away, for the first post on screen (largest contentful paint). */
   eager?: boolean;
   className?: string;
 };
 
 /**
- * A post's single media item (A-02). Images go through next/image (resized and
- * lazy-loaded, NFR-PERF-03; next.config.ts only allows our Storage bucket).
- * Videos use the native player (A-03), muted so they never play sound unasked,
- * and only fetch their metadata until played.
+ * A post's single media item (A-02), filling its parent, which must be
+ * positioned and sized. It is centred and never cropped (object-contain,
+ * FR-FEED-10). Images go through next/image (resized and lazy-loaded,
+ * NFR-PERF-03; next.config.ts only allows our Storage bucket). Videos use the
+ * native player (A-03), muted so they never play sound unasked, and only fetch
+ * their metadata until played.
  */
-export function PostMedia({ post, eager = false, className }: PostMediaProps) {
+export function PostMedia({ post, sizes, eager = false, className }: PostMediaProps) {
   const t = useTranslations();
   const name = post.author.displayName;
 
+  if (post.mediaType === "VIDEO") {
+    return (
+      <video
+        src={post.mediaUrl}
+        controls
+        preload="metadata"
+        playsInline
+        muted
+        aria-label={t("post.videoLabel", { name })}
+        className={cn("absolute inset-0 size-full object-contain", className)}
+      />
+    );
+  }
+
   return (
-    <div
-      className={cn("relative aspect-4/5 w-full overflow-hidden rounded-lg bg-muted", className)}
-    >
-      {post.mediaType === "VIDEO" ? (
-        <video
-          src={post.mediaUrl}
-          controls
-          preload="metadata"
-          playsInline
-          muted
-          aria-label={t("post.videoLabel", { name })}
-          className="absolute inset-0 size-full bg-black object-contain"
-        />
-      ) : (
-        <Image
-          src={post.mediaUrl}
-          alt={t("post.imageAlt", { name })}
-          fill
-          sizes={IMAGE_SIZES}
-          // Next 16 recommends loading/fetchPriority over the `preload` prop when several
-          // images could be the LCP element, as in a feed.
-          loading={eager ? "eager" : "lazy"}
-          fetchPriority={eager ? "high" : "auto"}
-          className="object-contain"
-        />
-      )}
-    </div>
+    <Image
+      src={post.mediaUrl}
+      alt={t("post.imageAlt", { name })}
+      fill
+      sizes={sizes}
+      // Next 16 recommends loading/fetchPriority over the `preload` prop when several
+      // images could be the LCP element, as in a feed.
+      loading={eager ? "eager" : "lazy"}
+      fetchPriority={eager ? "high" : "auto"}
+      className={cn("object-contain", className)}
+    />
   );
 }

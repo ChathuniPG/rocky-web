@@ -1,7 +1,8 @@
 "use client";
 
-import { PostCardSkeleton } from "@/components/skeletons";
 import { Skeleton } from "@/components/ui/skeleton";
+import { feedHeaderClasses, feedItemClasses } from "@/features/feed/feed-layout";
+import { FeedPostSkeleton } from "@/features/feed/feed-post-skeleton";
 import { useTranslations } from "@/i18n/i18n-provider";
 
 const NAV_ENTRY_COUNT = 7;
@@ -35,10 +36,14 @@ export function AppShellSkeleton() {
         ))}
       </div>
       <div className="min-w-0 flex-1">
-        <div className="mx-auto w-full max-w-2xl space-y-4 px-4 py-6 lg:px-6">
-          <Skeleton aria-hidden="true" className="h-8 w-40" />
-          <PostCardSkeleton />
-          <PostCardSkeleton />
+        {/* Shaped like the Home feed, the page most sessions start on. */}
+        <div aria-hidden="true" className={feedHeaderClasses}>
+          <div className="mx-auto flex h-full max-w-4xl items-center px-4 lg:px-6">
+            <Skeleton className="h-8 w-40" />
+          </div>
+        </div>
+        <div className={feedItemClasses}>
+          <FeedPostSkeleton />
         </div>
       </div>
     </div>
