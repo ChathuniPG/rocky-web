@@ -1,9 +1,12 @@
 import type { Metadata } from "next";
 
-import { ComingSoon } from "@/components/coming-soon";
 import { PageHeader } from "@/components/page-header";
-import { LogoutButton } from "@/features/auth/logout-button";
+import { AccountSetting } from "@/features/settings/account-setting";
+import { LanguageSetting } from "@/features/settings/language-setting";
+import { NotificationsSetting } from "@/features/settings/notifications-setting";
+import { ThemeSetting } from "@/features/settings/theme-setting";
 import { getTranslations } from "@/i18n/server";
+import { TranslatedText } from "@/i18n/translated-text";
 
 const t = getTranslations();
 
@@ -13,19 +16,16 @@ export const metadata: Metadata = { title: t("pages.settings.title") };
 // Next.js cannot prerender this page to validate instant navigation.
 export const instant = false;
 
-/**
- * Settings: theme, notifications, language, log out (FR-SET-01..04). Only log out
- * works so far; the rest of the page comes with #14.
- */
+/** Settings: theme, notifications, language and log out (FR-SET-01..04). */
 export default function SettingsPage() {
   return (
     <>
-      <PageHeader title={t("pages.settings.title")} />
+      <PageHeader title={<TranslatedText id="pages.settings.title" />} />
       <div className="space-y-6">
-        <ComingSoon />
-        <div className="flex justify-end">
-          <LogoutButton />
-        </div>
+        <ThemeSetting />
+        <NotificationsSetting />
+        <LanguageSetting />
+        <AccountSetting />
       </div>
     </>
   );

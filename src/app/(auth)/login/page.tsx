@@ -15,10 +15,10 @@ export const metadata: Metadata = { title: t("pages.login.title") };
 export default function LoginPage() {
   return (
     <AuthFormCard
-      title={t("pages.login.title")}
-      description={t("pages.login.description")}
-      switchPrompt={t("pages.login.switchPrompt")}
-      switchLink={t("pages.login.switchLink")}
+      titleKey="pages.login.title"
+      descriptionKey="pages.login.description"
+      switchPromptKey="pages.login.switchPrompt"
+      switchLinkKey="pages.login.switchLink"
       switchHref="/signup"
     >
       <LoginForm />

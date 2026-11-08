@@ -2,11 +2,11 @@
 
 import Link from "next/link";
 import { useSearchParams } from "next/navigation";
-import { Suspense } from "react";
+import { Suspense, type ReactNode } from "react";
 
 type AuthSwitchLinkProps = {
   href: "/login" | "/signup";
-  children: string;
+  children: ReactNode;
 };
 
 const linkClasses =

@@ -19,6 +19,7 @@ import { queueToastAfterReload } from "@/lib/toast-after-reload";
 
 import { authMeQueryKey, fetchCurrentUser } from "./auth-query";
 import { endSessionWithFullReload } from "./session-navigation";
+import { useAccountLanguage } from "./use-account-language";
 
 /** What {@link useAuth} returns. */
 export type AuthContextValue = {
@@ -96,6 +97,8 @@ export function AuthProvider({ children }: { children: ReactNode }) {
       toast.error(t("auth.logout.error"));
     },
   });
+
+  useAccountLanguage(sessionEnded ? undefined : userQuery.data?.language);
 
   const { mutate: logoutMutate, isPending: isLoggingOut } = logoutMutation;
   const { refetch } = userQuery;

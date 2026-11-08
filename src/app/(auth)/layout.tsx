@@ -1,16 +1,17 @@
+import { LanguageMenu } from "@/components/language-menu";
 import { ThemeToggle } from "@/components/theme-toggle";
-import { getTranslations } from "@/i18n/server";
+import { TranslatedText } from "@/i18n/translated-text";
 
 /**
  * Layout for /login and /signup: no navigation (design.md 7.1), just the brand
- * and a centred card. The theme toggle stays available before sign-in.
+ * and a centred card. The language menu and theme toggle stay available
+ * before sign-in.
  */
 export default function AuthLayout({ children }: LayoutProps<"/">) {
-  const t = getTranslations();
-
   return (
     <div className="relative flex min-h-dvh flex-col items-center justify-center gap-8 px-4 py-12">
-      <div className="absolute top-4 right-4">
+      <div className="absolute top-4 right-4 flex items-center gap-1">
+        <LanguageMenu />
         <ThemeToggle />
       </div>
       <p className="flex items-center gap-3 text-2xl font-extrabold tracking-tight">
@@ -20,7 +21,7 @@ export default function AuthLayout({ children }: LayoutProps<"/">) {
         >
           R
         </span>
-        {t("common.appName")}
+        <TranslatedText id="common.appName" />
       </p>
       <main className="w-full max-w-md">{children}</main>
     </div>

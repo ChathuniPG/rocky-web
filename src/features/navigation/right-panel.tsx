@@ -1,14 +1,16 @@
+"use client";
+
 import { UsersIcon } from "lucide-react";
 
 import { EmptyState } from "@/components/empty-state";
-import { getTranslations } from "@/i18n/server";
+import { useTranslations } from "@/i18n/i18n-provider";
 
 /**
  * Right-hand column on widescreens (design.md 7.2), shown from 1536px. Will list
  * suggested users; a placeholder for now.
  */
 export function RightPanel() {
-  const t = getTranslations();
+  const t = useTranslations();
 
   return (
     <aside

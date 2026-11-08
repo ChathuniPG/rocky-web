@@ -7,7 +7,7 @@ export const locales = ["en", "si"] as const;
 /** An interface language code. */
 export type Locale = (typeof locales)[number];
 
-/** Language used until the user picks one (the switcher arrives with the i18n issue). */
+/** Language used until the user picks one, and the one the server renders. */
 export const defaultLocale: Locale = "en";
 
 /** Shape of a dictionary; English is the reference every other language must match. */
