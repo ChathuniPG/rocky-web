@@ -33,6 +33,12 @@ export type VideoCoordinator = {
   claim: (id: string) => void;
   /** The id of the video allowed to play, if any. */
   activeId: () => string | null;
+  /**
+   * Calls `listener` whenever the active video changes; returns a function
+   * that stops it. Lets a player re-render when it becomes active, e.g. to
+   * start buffering (NFR-PERF-03).
+   */
+  subscribe: (listener: () => void) => () => void;
 };
 
 type Entry = { video: CoordinatedVideo; ratio: number };
@@ -51,6 +57,13 @@ export function createVideoCoordinator(): VideoCoordinator {
   let active: string | null = null;
   // A count, not a flag, so a dialog opened from another dialog doesn't resume playback when it closes.
   let suspensions = 0;
+  const listeners = new Set<() => void>();
+
+  function setActive(next: string | null): void {
+    if (next === active) return;
+    active = next;
+    for (const listener of listeners) listener();
+  }
 
   function mostVisibleId(): string | null {
     if (!pageVisible || suspensions > 0) return null;
@@ -70,7 +83,7 @@ export function createVideoCoordinator(): VideoCoordinator {
   function activate(next: string | null): void {
     if (next === active) return;
     const previous = active === null ? undefined : entries.get(active);
-    active = next;
+    setActive(next);
     previous?.video.pause();
     if (next !== null) entries.get(next)?.video.play();
   }
@@ -83,7 +96,7 @@ export function createVideoCoordinator(): VideoCoordinator {
         if (!entry || entry.video !== video) return;
         entries.delete(id);
         if (active === id) {
-          active = null;
+          setActive(null);
           video.pause();
           activate(mostVisibleId());
         }
@@ -114,10 +127,16 @@ export function createVideoCoordinator(): VideoCoordinator {
     claim(id) {
       if (!entries.has(id)) return;
       const previous = active === null || active === id ? undefined : entries.get(active);
-      active = id;
+      setActive(id);
       previous?.video.pause();
     },
     activeId: () => active,
+    subscribe(listener) {
+      listeners.add(listener);
+      return () => {
+        listeners.delete(listener);
+      };
+    },
   };
 }
 

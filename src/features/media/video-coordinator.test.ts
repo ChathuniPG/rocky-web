@@ -188,4 +188,34 @@ describe("createVideoCoordinator", () => {
       expect(log).toEqual([]);
     });
   });
+
+  describe("subscribe", () => {
+    it("notifies when the active video changes, and only then", () => {
+      const { coordinator } = setup(["a", "b"]);
+      const seen: (string | null)[] = [];
+      coordinator.subscribe(() => seen.push(coordinator.activeId()));
+      coordinator.setVisibility("a", 1);
+      coordinator.setVisibility("a", 0.9);
+      coordinator.claim("b");
+      expect(seen).toEqual(["a", "b"]);
+    });
+
+    it("notifies when the active video is removed", () => {
+      const { coordinator, unregister } = setup(["a"]);
+      coordinator.setVisibility("a", 1);
+      const seen: (string | null)[] = [];
+      coordinator.subscribe(() => seen.push(coordinator.activeId()));
+      unregister.a?.();
+      expect(seen).toEqual([null]);
+    });
+
+    it("stops notifying after unsubscribing", () => {
+      const { coordinator } = setup(["a"]);
+      let calls = 0;
+      const unsubscribe = coordinator.subscribe(() => (calls += 1));
+      unsubscribe();
+      coordinator.setVisibility("a", 1);
+      expect(calls).toBe(0);
+    });
+  });
 });

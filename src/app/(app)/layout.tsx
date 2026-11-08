@@ -1,4 +1,5 @@
 import { Suspense } from "react";
+import { preconnect } from "react-dom";
 
 import { MAIN_CONTENT_ID, SkipLink } from "@/components/skip-link";
 import { AuthGate } from "@/features/auth/auth-gate";
@@ -19,6 +20,10 @@ import { Sidebar } from "@/features/navigation/sidebar";
  * show it once the user is signed in (ADR-013).
  */
 export default function AppLayout({ children }: LayoutProps<"/">) {
+  // Opens the connection to Storage while the session is checked, so the first
+  // video or image doesn't also wait for DNS and TLS (NFR-PERF-03). No
+  // crossOrigin: media loads without CORS, and a CORS preconnect can't be reused for it.
+  preconnect("https://firebasestorage.googleapis.com");
   return (
     <AuthProvider>
       <AuthGate>

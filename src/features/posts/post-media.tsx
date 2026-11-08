@@ -3,7 +3,9 @@
 import Image from "next/image";
 import type { ReactNode } from "react";
 
+import { VideoPlaceholder } from "@/features/media/video-placeholder";
 import { VideoPlayer } from "@/features/media/video-player";
+import type { VideoPreload } from "@/features/media/video-preload";
 import { useTranslations } from "@/i18n/i18n-provider";
 import type { Post } from "@/lib/api/types";
 import { cn } from "@/lib/utils";
@@ -28,6 +30,12 @@ type PostMediaProps = {
   overlay?: ReactNode;
   /** Positions a video's sound control, e.g. beside a Back button; see VideoPlayer. */
   soundControlClassName?: string;
+  /** A video's `preload` hint while it isn't playing; see VideoPlayer. Ignored for images. */
+  videoPreload?: VideoPreload;
+  /** False renders a video as a lightweight placeholder with no media element (the feed's window). */
+  videoMounted?: boolean;
+  /** See VideoPlayer's onActiveChange. */
+  onVideoActiveChange?: (active: boolean) => void;
   className?: string;
 };
 
@@ -37,7 +45,8 @@ type PostMediaProps = {
  * FR-FEED-10). Images go through next/image (resized and lazy-loaded,
  * NFR-PERF-03; next.config.ts only allows our Storage bucket). Videos use the
  * custom VideoPlayer (FR-FEED-09, A-03): autoplay in view, muted unless the
- * viewer turned sound on, and only their metadata is fetched until played.
+ * viewer turned sound on, and only their metadata is fetched until they play
+ * or the feed asks to buffer them ahead (`videoPreload`, NFR-PERF-03).
  */
 export function PostMedia({
   post,
@@ -45,18 +54,26 @@ export function PostMedia({
   eager = false,
   overlay,
   soundControlClassName,
+  videoPreload,
+  videoMounted = true,
+  onVideoActiveChange,
   className,
 }: PostMediaProps) {
   const t = useTranslations();
   const name = post.author.displayName;
 
   if (post.mediaType === "VIDEO") {
+    const label = t("post.videoLabel", { name });
+    if (!videoMounted)
+      return <VideoPlaceholder label={label} overlay={overlay} className={className} />;
     return (
       <VideoPlayer
         src={post.mediaUrl}
-        label={t("post.videoLabel", { name })}
+        label={label}
         overlay={overlay}
         soundControlClassName={soundControlClassName}
+        preload={videoPreload}
+        onActiveChange={onVideoActiveChange}
         className={className}
       />
     );
