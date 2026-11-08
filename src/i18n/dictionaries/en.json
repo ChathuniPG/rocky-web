@@ -200,7 +200,10 @@
     "refresh": "Refresh feed",
     "loadMore": "Load more posts",
     "end": "You’re all caught up",
-    "errorTitle": "We couldn’t load your feed"
+    "errorTitle": "We couldn’t load your feed",
+    "previousPost": "Previous post",
+    "nextPost": "Next post",
+    "stepNavigation": "Feed navigation"
   },
   "post": {
     "imageAlt": "Photo posted by {name}",

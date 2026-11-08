@@ -154,6 +154,19 @@
     scroll-snap-type: y mandatory;
     scroll-padding-top: 3.5rem;
   }
+  /*
+   * No scrollbar on the feed from 1024px, where the previous/next buttons
+   * appear (FR-FEED-10): dragging it jumps past posts that aren't loaded or
+   * mounted yet. Scoped by the same attribute, so other pages keep theirs.
+   */
+  @media (width >= 64rem) {
+    html[data-feed-snap] {
+      scrollbar-width: none;
+    }
+    html[data-feed-snap]::-webkit-scrollbar {
+      display: none;
+    }
+  }
   body {
     @apply bg-background text-foreground;
   }
