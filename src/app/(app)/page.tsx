@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 
 import { HomeFeed } from "@/features/feed/home-feed";
+import { DocumentTitle } from "@/i18n/document-title";
 import { getTranslations } from "@/i18n/server";
 
 const t = getTranslations();
@@ -13,5 +14,10 @@ export const instant = false;
 
 /** Home feed (FR-FEED-01 to FR-FEED-08). The feed itself is a client component. */
 export default function HomePage() {
-  return <HomeFeed />;
+  return (
+    <>
+      <DocumentTitle id="pages.home.title" />
+      <HomeFeed />
+    </>
+  );
 }

@@ -55,11 +55,15 @@ export function Sidebar() {
   );
 
   return (
-    <aside className="sticky top-0 flex h-dvh w-19 shrink-0 flex-col border-r px-3 py-4 xl:w-64">
+    // Scrolls on its own when the viewport is short (e.g. 200–400 % zoom), so every
+    // entry stays reachable (WCAG 1.4.4, 1.4.10). The padding keeps focus rings
+    // inside the scroll box, which would otherwise clip them.
+    <aside className="sticky top-0 flex h-dvh w-19 shrink-0 flex-col overflow-y-auto overscroll-contain border-r px-3 py-4 xl:w-64">
+      {/* The link's name is its text (sr-only below 1280px), not an aria-label, so the
+          name matches what is shown (WCAG 2.5.3). */}
       <Link
         href="/"
-        aria-label={t("common.appName")}
-        className="mb-6 flex h-12 items-center justify-center gap-3 rounded-xl px-3 outline-none focus-visible:ring-3 focus-visible:ring-ring xl:justify-start"
+        className="mb-6 flex h-12 shrink-0 items-center justify-center gap-3 rounded-xl px-3 outline-none focus-visible:ring-3 focus-visible:ring-ring xl:justify-start"
       >
         <span
           aria-hidden="true"
@@ -67,7 +71,7 @@ export function Sidebar() {
         >
           R
         </span>
-        <span aria-hidden="true" className="hidden text-xl font-extrabold tracking-tight xl:inline">
+        <span className="sr-only text-xl font-extrabold tracking-tight xl:not-sr-only">
           {t("common.appName")}
         </span>
       </Link>

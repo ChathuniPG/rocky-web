@@ -64,7 +64,8 @@ export function NotificationItem({ notification }: { notification: Notification 
       </span>
 
       {isRead ? null : (
-        <span aria-hidden="true" className="size-2.5 shrink-0 rounded-full bg-highlight" />
+        // highlight-text gives the dot 3:1+ against the tinted row in both themes (WCAG 1.4.11).
+        <span aria-hidden="true" className="size-2.5 shrink-0 rounded-full bg-highlight-text" />
       )}
 
       {post && notification.type !== "FOLLOW" ? (

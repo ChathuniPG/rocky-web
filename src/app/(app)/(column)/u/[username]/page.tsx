@@ -3,6 +3,7 @@ import { Suspense } from "react";
 
 import { PageHeader } from "@/components/page-header";
 import { ProfileView, ProfileViewSkeleton } from "@/features/profile/profile-view";
+import { DocumentTitle } from "@/i18n/document-title";
 import { getTranslations } from "@/i18n/server";
 import { TranslatedText } from "@/i18n/translated-text";
 
@@ -22,6 +23,7 @@ export const instant = false;
 export default function ProfilePage({ params }: PageProps<"/u/[username]">) {
   return (
     <>
+      <DocumentTitle id="pages.profile.title" />
       <PageHeader title={<TranslatedText id="pages.profile.title" />} />
       <Suspense fallback={<ProfileViewSkeleton />}>
         <ProfileForParams params={params} />

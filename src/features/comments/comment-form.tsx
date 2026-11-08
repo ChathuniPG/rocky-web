@@ -17,6 +17,9 @@ import { useAddComment } from "./use-comment-mutations";
 
 type CommentFormInput = { body: string };
 
+/** Id of the comment field; other components move focus here (e.g. after deleting a comment). */
+export const COMMENT_FIELD_ID = "comment-body";
+
 /**
  * The add-comment box under a post (FR-FEED-06): 1–500 characters after
  * trimming, a live counter, and a busy button that blocks double submits.
@@ -64,11 +67,11 @@ export function CommentForm({ postId }: { postId: string }) {
 
   return (
     <form noValidate onSubmit={(event) => void submit(event)} className="flex flex-col gap-2">
-      <Label htmlFor="comment-body" className="sr-only">
+      <Label htmlFor={COMMENT_FIELD_ID} className="sr-only">
         {t("comments.label")}
       </Label>
       <Textarea
-        id="comment-body"
+        id={COMMENT_FIELD_ID}
         placeholder={t("comments.placeholder")}
         rows={2}
         aria-invalid={Boolean(errorKey)}

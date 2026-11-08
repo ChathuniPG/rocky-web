@@ -31,7 +31,11 @@ export function MarkAllReadButton() {
       size="sm"
       loading={markAllRead.isPending}
       disabled={!hasUnread}
+      // It disables itself once everything is read; focus stays on it (WCAG 2.4.3).
+      focusableWhenDisabled
       onClick={() => markAllRead.mutate()}
+      // The label may wrap (long in Sinhala) instead of overflowing narrow screens (WCAG 1.4.10).
+      className="h-auto min-h-8 min-w-0 shrink py-1 text-left whitespace-normal"
     >
       <CheckCheckIcon aria-hidden="true" />
       {t("notifications.markAllRead")}

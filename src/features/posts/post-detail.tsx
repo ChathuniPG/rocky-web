@@ -150,8 +150,11 @@ export function PostDetail({ postId }: { postId: string }) {
             <CommentList postId={post.id} />
           </section>
         </div>
-        {/* Stays at the bottom of the panel, and of the screen when stacked. */}
-        <div className="sticky bottom-0 border-t bg-card p-4">
+        {/* Stays at the bottom of the panel, and of the screen when stacked. On short
+            viewports (e.g. 200–400 % zoom) a pinned form would cover most of the
+            screen and hide focused content, so it scrolls with the page there
+            (WCAG 1.4.10, 2.4.11). */}
+        <div className="sticky bottom-0 border-t bg-card p-4 [@media(max-height:40rem)]:static">
           <CommentForm postId={post.id} />
         </div>
       </div>

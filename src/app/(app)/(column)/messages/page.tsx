@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 
 import { PageHeader } from "@/components/page-header";
 import { ConversationList } from "@/features/messages/conversation-list";
+import { DocumentTitle } from "@/i18n/document-title";
 import { getTranslations } from "@/i18n/server";
 import { TranslatedText } from "@/i18n/translated-text";
 
@@ -17,6 +18,7 @@ export const instant = false;
 export default function MessagesPage() {
   return (
     <>
+      <DocumentTitle id="pages.messages.title" />
       <PageHeader title={<TranslatedText id="pages.messages.title" />} />
       <ConversationList />
     </>

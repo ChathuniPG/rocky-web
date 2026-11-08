@@ -5,6 +5,7 @@ import { useLayoutEffect, useRef, useState } from "react";
 
 import { EmptyState } from "@/components/empty-state";
 import { Button } from "@/components/ui/button";
+import { useFocusHandoff } from "@/hooks/use-focus-handoff";
 import { useInView } from "@/hooks/use-in-view";
 import { usePrefersReducedMotion } from "@/hooks/use-prefers-reduced-motion";
 import { useTranslations } from "@/i18n/i18n-provider";
@@ -151,6 +152,8 @@ export function MessageTimeline({
     rootMargin: "200px 0px",
     enabled: hasOlder && !isLoadingOlder && !isLoadOlderError,
   });
+  // When the oldest page arrives the button goes away; keep keyboard focus in the history.
+  const loadOlderFocusHandoff = useFocusHandoff(hasOlder, scrollRef);
 
   const lastSeenIndex = lastSeenId
     ? messages.findIndex((message) => message.id === lastSeenId)
@@ -188,7 +191,13 @@ export function MessageTimeline({
                 {t("list.pageError")}
               </p>
             ) : null}
-            <Button variant="outline" size="sm" loading={isLoadingOlder} onClick={requestOlder}>
+            <Button
+              variant="outline"
+              size="sm"
+              loading={isLoadingOlder}
+              onClick={requestOlder}
+              {...loadOlderFocusHandoff}
+            >
               {isLoadOlderError ? t("common.retry") : t("messages.thread.loadOlder")}
             </Button>
           </div>

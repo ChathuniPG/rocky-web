@@ -57,10 +57,13 @@ export function VideoProgressBar({ currentTime, duration, onSeek }: VideoProgres
       thumbClassName="size-3 border-0 bg-white opacity-0 ring-white/60 group-hover/progress:opacity-100 focus-visible:opacity-100"
       thumbProps={{
         "aria-label": t("post.video.progress"),
-        "aria-valuetext": t("post.video.progressValue", {
-          current: formatMediaTime(currentTime),
-          total: formatMediaTime(hasDuration ? duration : 0),
-        }),
+        // Until the duration is known, "0:00 of 0:00" would be misleading (WCAG 4.1.2).
+        "aria-valuetext": hasDuration
+          ? t("post.video.progressValue", {
+              current: formatMediaTime(currentTime),
+              total: formatMediaTime(duration),
+            })
+          : t("common.loading"),
       }}
     />
   );

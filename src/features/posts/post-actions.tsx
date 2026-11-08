@@ -74,16 +74,22 @@ function FeedActions({ post, linkComments, className }: VariantProps) {
   return (
     <div
       className={cn(
-        "flex items-start justify-center gap-2 sm:gap-4 md:flex-col md:items-center md:gap-3",
+        // Wraps below 768px instead of overflowing very narrow viewports, e.g. 320px at
+        // 400 % zoom (WCAG 1.4.10); from 768px it is a single column.
+        "flex flex-wrap items-start justify-center gap-2 sm:gap-4 md:flex-col md:flex-nowrap md:items-center md:gap-3",
         className,
       )}
     >
+      {/* Named by hidden text, not aria-label: the only visible content is the
+          picture or initials, which aren't a text label (WCAG 2.5.3). */}
       <Link
         href={profileHref(author.username)}
-        aria-label={t("post.authorProfile", { name: author.displayName })}
         className="mb-1 rounded-full transition-opacity outline-none hover:opacity-85 focus-visible:ring-3 focus-visible:ring-ring focus-visible:ring-offset-2 focus-visible:ring-offset-background active:opacity-75"
       >
-        <UserAvatar name={author.displayName} src={author.avatarUrl} className="size-11" />
+        <span aria-hidden="true">
+          <UserAvatar name={author.displayName} src={author.avatarUrl} className="size-11" />
+        </span>
+        <span className="sr-only">{t("post.authorProfile", { name: author.displayName })}</span>
       </Link>
 
       {/* aria-pressed exposes like and save as toggles; each name contains its visible caption. */}
@@ -94,7 +100,9 @@ function FeedActions({ post, linkComments, className }: VariantProps) {
         aria-pressed={post.likedByMe}
         onClick={model.toggleLike}
         className={cn(post.likedByMe && "text-highlight-text")}
-        iconClassName={cn(post.likedByMe && "fill-highlight text-highlight")}
+        // highlight-text, not the brand orange: a graphic needs 3:1 against the page
+        // (WCAG 1.4.11); the brand orange is only 2.7:1 in the light theme.
+        iconClassName={cn(post.likedByMe && "fill-highlight-text text-highlight-text")}
       />
 
       {linkComments ? (
@@ -155,7 +163,9 @@ function StackedContent({ icon: Icon, caption, label, iconClassName }: StackedCo
       <span className={iconCircleClasses}>
         <Icon aria-hidden="true" className={iconClassName} />
       </span>
-      <span aria-hidden="true" className="max-w-16 truncate">
+      {/* Wraps onto a second line rather than truncating: Sinhala captions such as
+          "බෙදාගන්න" are wider than the column (WCAG 1.4.4, design rule on longer text). */}
+      <span aria-hidden="true" className="max-w-20 text-center leading-tight break-words">
         {caption}
       </span>
       <span className="sr-only">{label}</span>
@@ -217,7 +227,7 @@ function InlineActions({ post, linkComments, className }: VariantProps) {
         onClick={model.toggleLike}
         className={cn("tabular-nums", post.likedByMe && "text-highlight-text")}
       >
-        <HeartIcon aria-hidden="true" className={cn(post.likedByMe && "fill-highlight")} />
+        <HeartIcon aria-hidden="true" className={cn(post.likedByMe && "fill-highlight-text")} />
         <span aria-hidden="true">{model.likeCount}</span>
         <span className="sr-only">{model.likeLabel}</span>
       </Button>

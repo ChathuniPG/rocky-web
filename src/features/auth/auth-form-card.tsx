@@ -1,6 +1,7 @@
 import type { ReactNode } from "react";
 
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
+import { DocumentTitle } from "@/i18n/document-title";
 import type { TranslationKey } from "@/i18n/translate";
 import { TranslatedText } from "@/i18n/translated-text";
 
@@ -21,6 +22,7 @@ type AuthFormCardProps = {
  * form, and a link to the other form. A server component; only the form and
  * the link are client components. The text is passed as translation keys and
  * rendered by <TranslatedText />, so it follows a language switch (FR-SET-03).
+ * The heading key also sets the tab title in the active language.
  */
 export function AuthFormCard({
   titleKey,
@@ -32,6 +34,7 @@ export function AuthFormCard({
 }: AuthFormCardProps) {
   return (
     <Card>
+      <DocumentTitle id={titleKey} />
       <CardHeader>
         <CardTitle>
           <h1 className="text-xl font-bold">
