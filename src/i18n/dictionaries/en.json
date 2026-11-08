@@ -4,7 +4,6 @@
     "close": "Close",
     "loading": "Loading…",
     "comingSoon": "Coming soon",
-    "underConstruction": "This page is under construction.",
     "retry": "Try again",
     "cancel": "Cancel",
     "characterCount": "{count} of {max} characters used"
@@ -353,6 +352,36 @@
       "send": "Send"
     }
   },
+  "languages": {
+    "en": "English",
+    "si": "සිංහල"
+  },
+  "settings": {
+    "appearance": {
+      "title": "Appearance",
+      "description": "Choose how R.O.C.K.Y. looks on this device."
+    },
+    "notifications": {
+      "title": "Notifications",
+      "description": "Choose whether you hear about activity on your posts and profile.",
+      "label": "Notifications",
+      "hint": "When off, new likes, comments and follows won’t notify you.",
+      "turnedOn": "Notifications turned on.",
+      "turnedOff": "Notifications turned off.",
+      "error": "Couldn’t update notifications."
+    },
+    "language": {
+      "title": "Language",
+      "description": "Choose the language of the app. It’s saved to your account.",
+      "change": "Change language",
+      "saved": "Language changed.",
+      "error": "Couldn’t change the language."
+    },
+    "account": {
+      "title": "Account",
+      "description": "Log out of R.O.C.K.Y. on this device."
+    }
+  },
   "pages": {
     "home": {
       "title": "Home",
@@ -402,7 +431,9 @@
     "logout": {
       "action": "Log out",
       "success": "You've been logged out.",
-      "error": "Couldn't log out. Check your connection and try again."
+      "error": "Couldn't log out. Check your connection and try again.",
+      "confirmTitle": "Log out?",
+      "confirmDescription": "You’ll need to log in again to use R.O.C.K.Y. on this device."
     },
     "fields": {
       "email": "Email",

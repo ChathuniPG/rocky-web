@@ -1,44 +1,54 @@
 import type { ReactNode } from "react";
 
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
+import type { TranslationKey } from "@/i18n/translate";
+import { TranslatedText } from "@/i18n/translated-text";
 
 import { AuthSwitchLink } from "./auth-switch-link";
 
 type AuthFormCardProps = {
-  title: string;
-  description: string;
+  titleKey: TranslationKey;
+  descriptionKey: TranslationKey;
   /** The form itself (a client component). */
   children: ReactNode;
-  switchPrompt: string;
-  switchLink: string;
+  switchPromptKey: TranslationKey;
+  switchLinkKey: TranslationKey;
   switchHref: "/login" | "/signup";
 };
 
 /**
  * Card around the login and sign-up forms: heading, short description, the
  * form, and a link to the other form. A server component; only the form and
- * the link are client components.
+ * the link are client components. The text is passed as translation keys and
+ * rendered by <TranslatedText />, so it follows a language switch (FR-SET-03).
  */
 export function AuthFormCard({
-  title,
-  description,
+  titleKey,
+  descriptionKey,
   children,
-  switchPrompt,
-  switchLink,
+  switchPromptKey,
+  switchLinkKey,
   switchHref,
 }: AuthFormCardProps) {
   return (
     <Card>
       <CardHeader>
         <CardTitle>
-          <h1 className="text-xl font-bold">{title}</h1>
+          <h1 className="text-xl font-bold">
+            <TranslatedText id={titleKey} />
+          </h1>
         </CardTitle>
-        <CardDescription>{description}</CardDescription>
+        <CardDescription>
+          <TranslatedText id={descriptionKey} />
+        </CardDescription>
       </CardHeader>
       <CardContent className="space-y-6">
         {children}
         <p className="text-sm text-muted-foreground">
-          {switchPrompt} <AuthSwitchLink href={switchHref}>{switchLink}</AuthSwitchLink>
+          <TranslatedText id={switchPromptKey} />{" "}
+          <AuthSwitchLink href={switchHref}>
+            <TranslatedText id={switchLinkKey} />
+          </AuthSwitchLink>
         </p>
       </CardContent>
     </Card>

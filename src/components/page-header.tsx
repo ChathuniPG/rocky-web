@@ -3,7 +3,8 @@ import type { ReactNode } from "react";
 import { cn } from "@/lib/utils";
 
 type PageHeaderProps = {
-  title: string;
+  /** Usually a <TranslatedText /> from a server page, so it follows a language switch. */
+  title: ReactNode;
   /** Optional controls aligned to the right of the title, e.g. "Mark all as read". */
   actions?: ReactNode;
   className?: string;

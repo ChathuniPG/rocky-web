@@ -1,16 +1,48 @@
 "use client";
 
-import { createContext, useContext, useMemo, type ReactNode } from "react";
+import {
+  createContext,
+  useContext,
+  useEffect,
+  useMemo,
+  useSyncExternalStore,
+  type ReactNode,
+} from "react";
 
+import {
+  getLocaleSnapshot,
+  getServerLocaleSnapshot,
+  setStoredLocale,
+  subscribeToLocale,
+} from "./locale-storage";
 import { createTranslator, getDictionary, type Locale, type Translate } from "./translate";
 
-type I18nContextValue = { locale: Locale; t: Translate };
+type I18nContextValue = { locale: Locale; t: Translate; setLocale: (locale: Locale) => void };
 
 const I18nContext = createContext<I18nContextValue | null>(null);
 
-/** Provides the active language and its translator to client components. */
-export function I18nProvider({ locale, children }: { locale: Locale; children: ReactNode }) {
-  const value = useMemo(() => ({ locale, t: createTranslator(getDictionary(locale)) }), [locale]);
+/**
+ * Provides the active language and its translator to client components
+ * (FR-SET-03). The language lives in a small store outside React (remembered in
+ * localStorage); useSyncExternalStore reads it, renders the default language on
+ * the server and during hydration, then switches to the remembered one without
+ * a hydration mismatch. `<html lang>` follows the active language.
+ */
+export function I18nProvider({ children }: { children: ReactNode }) {
+  const locale = useSyncExternalStore(
+    subscribeToLocale,
+    getLocaleSnapshot,
+    getServerLocaleSnapshot,
+  );
+
+  useEffect(() => {
+    document.documentElement.lang = locale;
+  }, [locale]);
+
+  const value = useMemo(
+    () => ({ locale, t: createTranslator(getDictionary(locale)), setLocale: setStoredLocale }),
+    [locale],
+  );
   return <I18nContext value={value}>{children}</I18nContext>;
 }
 
@@ -28,4 +60,9 @@ export function useTranslations(): Translate {
 /** Returns the active locale code. */
 export function useLocale(): Locale {
   return useI18nContext().locale;
+}
+
+/** Returns a function that switches the interface language and remembers it on this device. */
+export function useSetLocale(): (locale: Locale) => void {
+  return useI18nContext().setLocale;
 }

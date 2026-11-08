@@ -18,6 +18,8 @@ type ConfirmDialogProps = {
   title: string;
   description: string;
   confirmLabel: string;
+  /** Red for destructive actions (the default); "primary" for ones that only end something, like logging out. */
+  confirmVariant?: "destructive" | "primary";
   /** Runs the action. The dialog stays open (and can't be dismissed) while `isPending`. */
   onConfirm: () => void;
   isPending: boolean;
@@ -27,7 +29,7 @@ type ConfirmDialogProps = {
 
 /**
  * Asks before a destructive action, e.g. deleting a post or comment
- * (FR-POST-05). An alert dialog: focus starts on Cancel and clicking outside
+ * (FR-POST-05), or before logging out (FR-SET-04). An alert dialog: focus starts on Cancel and clicking outside
  * doesn't dismiss it. The confirm button is a plain button rather than the
  * dialog's own Action, which would close the dialog before the request finished.
  */
@@ -37,6 +39,7 @@ export function ConfirmDialog({
   title,
   description,
   confirmLabel,
+  confirmVariant = "destructive",
   onConfirm,
   isPending,
   onCloseAutoFocus,
@@ -58,7 +61,7 @@ export function ConfirmDialog({
         </AlertDialogHeader>
         <AlertDialogFooter>
           <AlertDialogCancel disabled={isPending}>{t("common.cancel")}</AlertDialogCancel>
-          <Button variant="destructive" loading={isPending} onClick={onConfirm}>
+          <Button variant={confirmVariant} loading={isPending} onClick={onConfirm}>
             {confirmLabel}
           </Button>
         </AlertDialogFooter>

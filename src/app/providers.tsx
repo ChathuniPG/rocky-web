@@ -8,7 +8,6 @@ import { ToastAfterReload } from "@/components/toast-after-reload";
 import { Toaster } from "@/components/ui/sonner";
 import { TooltipProvider } from "@/components/ui/tooltip";
 import { I18nProvider } from "@/i18n/i18n-provider";
-import { defaultLocale } from "@/i18n/translate";
 import { isApiError, isSessionExpiredError } from "@/lib/api/errors";
 
 const MAX_QUERY_RETRIES = 2;
@@ -55,7 +54,7 @@ export function Providers({ children }: { children: ReactNode }) {
   return (
     <ThemeProvider>
       <QueryClientProvider client={queryClient}>
-        <I18nProvider locale={defaultLocale}>
+        <I18nProvider>
           <TooltipProvider delayDuration={300}>
             {children}
             <Toaster />
