@@ -25,7 +25,9 @@
     "captionTooLong": "සිරස්තල උපරිම අක්ෂර {max} ක් විය හැක.",
     "displayNameRequired": "පෙන්වන නාමයක් ඇතුළත් කරන්න.",
     "displayNameTooLong": "පෙන්වන නාමයක් උපරිම අක්ෂර {max}ක් විය හැක.",
-    "bioTooLong": "ජීව දත්ත උපරිම අක්ෂර {max}ක් විය හැක."
+    "bioTooLong": "ජීව දත්ත උපරිම අක්ෂර {max}ක් විය හැක.",
+    "messageRequired": "පළමුව පණිවිඩයක් ලියන්න.",
+    "messageTooLong": "පණිවිඩ උපරිම අක්ෂර {max} ක් විය හැක."
   },
   "nav": {
     "mainNavigation": "ප්‍රධාන සංචාලනය",
@@ -308,6 +310,47 @@
       "markReadFailed": "දැනුම්දීම කියවූ ලෙස සලකුණු කළ නොහැකි විය.",
       "markAllReadSuccess": "සියලු දැනුම්දීම් කියවූ ලෙස සලකුණු කෙරිණි.",
       "markAllReadFailed": "සියලු දැනුම්දීම් කියවූ ලෙස සලකුණු කළ නොහැකි විය."
+    }
+  },
+  "messages": {
+    "list": {
+      "label": "සංවාද",
+      "loading": "සංවාද පූරණය වෙමින්…",
+      "loadMore": "තවත් සංවාද පූරණය කරන්න",
+      "errorTitle": "ඔබේ සංවාද පූරණය කළ නොහැකි විය",
+      "ownPreview": "ඔබ: {body}",
+      "noMessages": "තවම පණිවිඩ නැත",
+      "unread": "නොකියවූ පණිවිඩ {count}",
+      "emptyTitle": "තවම සංවාද නැත",
+      "emptyDescription": "සංවාදයක් ආරම්භ කිරීමට කෙනෙකු සොයා ඔවුන්ගේ පැතිකඩේ ඇති පණිවිඩය භාවිත කරන්න.",
+      "findPeople": "පුද්ගලයන් සොයන්න"
+    },
+    "thread": {
+      "title": "{name} සමඟ සංවාදය",
+      "viewProfile": "{name}ගේ පැතිකඩ බලන්න",
+      "loading": "පණිවිඩ පූරණය වෙමින්…",
+      "historyLabel": "පණිවිඩ",
+      "loadOlder": "පැරණි පණිවිඩ පූරණය කරන්න",
+      "errorTitle": "මෙම සංවාදය පූරණය කළ නොහැකි විය",
+      "notFoundTitle": "සංවාදය හමු නොවීය",
+      "notFoundDescription": "එය නොපවතී, නැතහොත් එය ඔබේ සංවාදයක් නොවේ.",
+      "backToMessages": "පණිවිඩ වෙත ආපසු",
+      "emptyTitle": "ආයුබෝවන් කියන්න",
+      "emptyDescription": "ඔබ යවන පණිවිඩ මෙහි දිස්වේ.",
+      "newMessages": "නව පණිවිඩ",
+      "newMessageFrom": "{name}ගෙන් නව පණිවිඩයක්",
+      "you": "ඔබ",
+      "sending": "යවමින්…",
+      "notSent": "යැවුණේ නැත.",
+      "retry": "නැවත උත්සාහ කරන්න",
+      "discard": "ඉවත ලන්න",
+      "sendFailed": "ඔබේ පණිවිඩය යැවුණේ නැත."
+    },
+    "composer": {
+      "label": "පණිවිඩයක් ලියන්න",
+      "placeholder": "පණිවිඩයක් ලියන්න…",
+      "hint": "යැවීමට Enter, නව පේළියකට Shift+Enter",
+      "send": "යවන්න"
     }
   },
   "pages": {
