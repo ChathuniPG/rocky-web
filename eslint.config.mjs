@@ -7,6 +7,9 @@ const eslintConfig = defineConfig([
   ...nextVitals,
   ...nextTs,
   {
+    // Same files eslint-config-next registers its plugins for; without this, the react
+    // rule below also hits .cjs files, where the react plugin is not loaded.
+    files: ["**/*.{js,jsx,mjs,ts,tsx,mts,cts}"],
     rules: {
       "no-console": "error",
       "@typescript-eslint/no-explicit-any": "error",
@@ -35,6 +38,15 @@ const eslintConfig = defineConfig([
     rules: {
       "@typescript-eslint/no-floating-promises": "error",
       "@typescript-eslint/no-misused-promises": "error",
+    },
+  },
+  // CommonJS tool config such as ecosystem.config.cjs (PM2). ESLint already parses .cjs
+  // as CommonJS, so `module` and `__dirname` are known globals.
+  {
+    files: ["**/*.cjs"],
+    rules: {
+      "no-console": "error",
+      "no-unused-vars": "error",
     },
   },
   prettier,
