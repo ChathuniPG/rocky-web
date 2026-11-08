@@ -3,6 +3,7 @@ import { Suspense } from "react";
 
 import { ListRowSkeleton } from "@/components/skeletons";
 import { ConversationThread } from "@/features/messages/conversation-thread";
+import { DocumentTitle } from "@/i18n/document-title";
 import { getTranslations } from "@/i18n/server";
 
 const t = getTranslations();
@@ -20,9 +21,12 @@ export const instant = false;
  */
 export default function ConversationPage({ params }: PageProps<"/messages/[id]">) {
   return (
-    <Suspense fallback={<ListRowSkeleton />}>
-      <ThreadForParams params={params} />
-    </Suspense>
+    <>
+      <DocumentTitle id="pages.conversation.title" />
+      <Suspense fallback={<ListRowSkeleton />}>
+        <ThreadForParams params={params} />
+      </Suspense>
+    </>
   );
 }
 

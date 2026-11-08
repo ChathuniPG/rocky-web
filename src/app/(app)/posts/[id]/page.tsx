@@ -3,6 +3,7 @@ import { Suspense } from "react";
 
 import { PostDetail } from "@/features/posts/post-detail";
 import { PostDetailSkeleton } from "@/features/posts/post-detail-skeleton";
+import { DocumentTitle } from "@/i18n/document-title";
 import { getTranslations } from "@/i18n/server";
 import { TranslatedText } from "@/i18n/translated-text";
 
@@ -23,6 +24,7 @@ export const instant = false;
 export default function PostPage({ params }: PageProps<"/posts/[id]">) {
   return (
     <>
+      <DocumentTitle id="pages.post.title" />
       <h1 className="sr-only">
         <TranslatedText id="pages.post.title" />
       </h1>

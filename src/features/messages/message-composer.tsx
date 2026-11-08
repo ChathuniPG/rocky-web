@@ -89,6 +89,8 @@ export function MessageComposer({ onSend }: { onSend: (body: string) => void }) 
           size="icon"
           aria-label={t("messages.composer.send")}
           disabled={!canSend}
+          // Sending clears the field, which disables the button under keyboard focus.
+          focusableWhenDisabled
           className="shrink-0"
         >
           <SendHorizontalIcon aria-hidden="true" />

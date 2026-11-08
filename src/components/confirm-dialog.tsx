@@ -1,5 +1,7 @@
 "use client";
 
+import { useRef } from "react";
+
 import {
   AlertDialog,
   AlertDialogCancel,
@@ -25,6 +27,11 @@ type ConfirmDialogProps = {
   isPending: boolean;
   /** Where focus goes when the dialog closes; by default it returns to what had focus before. */
   onCloseAutoFocus?: (event: Event) => void;
+  /**
+   * Moves focus somewhere sensible when the element that opened the dialog is gone,
+   * e.g. the delete button of a comment that was just deleted.
+   */
+  fallbackFocus?: () => void;
 };
 
 /**
@@ -43,8 +50,35 @@ export function ConfirmDialog({
   onConfirm,
   isPending,
   onCloseAutoFocus,
+  fallbackFocus,
 }: ConfirmDialogProps) {
   const t = useTranslations();
+  // These dialogs are opened from state, not a Radix trigger, so Radix has no
+  // trigger to return focus to and would leave it on <body> (WCAG 2.4.3). The
+  // element that had focus as the dialog opened is remembered instead.
+  const openerRef = useRef<HTMLElement | null>(null);
+
+  function rememberOpener() {
+    openerRef.current =
+      document.activeElement instanceof HTMLElement ? document.activeElement : null;
+  }
+
+  function returnFocus(event: Event) {
+    if (onCloseAutoFocus) {
+      onCloseAutoFocus(event);
+      return;
+    }
+    const opener = openerRef.current;
+    openerRef.current = null;
+    if (opener?.isConnected) {
+      event.preventDefault();
+      opener.focus();
+    } else if (fallbackFocus) {
+      // Also runs when the dialog unmounts with its opener, once the focus trap is gone.
+      event.preventDefault();
+      fallbackFocus();
+    }
+  }
 
   return (
     <AlertDialog
@@ -54,7 +88,7 @@ export function ConfirmDialog({
         if (!isPending) onOpenChange(next);
       }}
     >
-      <AlertDialogContent onCloseAutoFocus={onCloseAutoFocus}>
+      <AlertDialogContent onOpenAutoFocus={rememberOpener} onCloseAutoFocus={returnFocus}>
         <AlertDialogHeader>
           <AlertDialogTitle>{title}</AlertDialogTitle>
           <AlertDialogDescription>{description}</AlertDialogDescription>

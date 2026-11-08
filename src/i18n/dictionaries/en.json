@@ -16,7 +16,8 @@
     "unknown": "Something went wrong. Please try again."
   },
   "list": {
-    "pageError": "Couldn’t load more."
+    "pageError": "Couldn’t load more.",
+    "end": "End of the list"
   },
   "validation": {
     "commentRequired": "Write a comment first.",
@@ -330,7 +331,6 @@
     },
     "thread": {
       "title": "Conversation with {name}",
-      "viewProfile": "View {name}’s profile",
       "loading": "Loading messages…",
       "historyLabel": "Messages",
       "loadOlder": "Load older messages",
@@ -387,6 +387,11 @@
     }
   },
   "pages": {
+    "notFound": {
+      "title": "Page not found",
+      "description": "The link may be broken, or the page may have been removed.",
+      "backHome": "Back to Home"
+    },
     "home": {
       "title": "Home",
       "emptyTitle": "No posts yet",

@@ -1,8 +1,10 @@
 "use client";
 
 import { CircleAlertIcon, CircleCheckIcon } from "lucide-react";
+import { useRef } from "react";
 
 import { Button } from "@/components/ui/button";
+import { useFocusHandoff } from "@/hooks/use-focus-handoff";
 import { useInView } from "@/hooks/use-in-view";
 import { useTranslations } from "@/i18n/i18n-provider";
 
@@ -23,7 +25,8 @@ type InfiniteListFooterProps = {
  * page as it nears the viewport; a "Load more" button does the same for
  * keyboard users and browsers without IntersectionObserver. After a failed page
  * it waits for a manual retry instead of retrying in a loop; after the last
- * page it shows an end marker.
+ * page it shows an end marker. If the button had keyboard focus when the last
+ * page arrived, focus moves to the end marker instead of falling to the page.
  */
 export function InfiniteListFooter({
   hasNextPage,
@@ -41,11 +44,25 @@ export function InfiniteListFooter({
     rootMargin: "600px 0px",
     enabled: hasNextPage && !isFetchingNextPage && !isFetchNextPageError,
   });
+  const endRef = useRef<HTMLParagraphElement>(null);
+  const focusHandoff = useFocusHandoff(hasNextPage, endRef);
 
   if (!hasNextPage) {
-    if (!endLabel) return null;
+    // Without a visible end label, a screen-reader-only marker still gives focus
+    // somewhere to land (and says why the button went away).
+    if (!endLabel) {
+      return (
+        <p ref={endRef} tabIndex={-1} className="sr-only">
+          {t("list.end")}
+        </p>
+      );
+    }
     return (
-      <p className="flex items-center justify-center gap-2 py-6 text-sm text-muted-foreground">
+      <p
+        ref={endRef}
+        tabIndex={-1}
+        className="flex items-center justify-center gap-2 py-6 text-sm text-muted-foreground outline-none"
+      >
         <CircleCheckIcon aria-hidden="true" className="size-4" />
         {endLabel}
       </p>
@@ -61,7 +78,12 @@ export function InfiniteListFooter({
           {t("list.pageError")}
         </p>
       ) : null}
-      <Button variant="outline" loading={isFetchingNextPage} onClick={fetchNextPage}>
+      <Button
+        variant="outline"
+        loading={isFetchingNextPage}
+        onClick={fetchNextPage}
+        {...focusHandoff}
+      >
         {isFetchNextPageError ? t("common.retry") : loadMoreLabel}
       </Button>
     </div>

@@ -3,6 +3,7 @@ import type { Metadata } from "next";
 import { PageHeader } from "@/components/page-header";
 import { MarkAllReadButton } from "@/features/notifications/mark-all-read-button";
 import { NotificationList } from "@/features/notifications/notification-list";
+import { DocumentTitle } from "@/i18n/document-title";
 import { getTranslations } from "@/i18n/server";
 import { TranslatedText } from "@/i18n/translated-text";
 
@@ -21,6 +22,7 @@ export const instant = false;
 export default function NotificationsPage() {
   return (
     <>
+      <DocumentTitle id="pages.notifications.title" />
       <PageHeader
         title={<TranslatedText id="pages.notifications.title" />}
         actions={<MarkAllReadButton />}

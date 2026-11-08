@@ -29,9 +29,9 @@ export function ThreadHeader({ conversation }: ThreadHeaderProps) {
       {otherUser ? (
         <>
           <h1 className="sr-only">{t("messages.thread.title", { name: otherUser.displayName })}</h1>
+          {/* Named by its visible name and username (WCAG 2.5.3); a link to the profile. */}
           <Link
             href={profileHref(otherUser.username)}
-            aria-label={t("messages.thread.viewProfile", { name: otherUser.displayName })}
             className="flex min-w-0 items-center gap-3 rounded-xl px-2 py-1 transition-colors outline-none hover:bg-accent focus-visible:ring-3 focus-visible:ring-ring"
           >
             <span aria-hidden="true" className="shrink-0">

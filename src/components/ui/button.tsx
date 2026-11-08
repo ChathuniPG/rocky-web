@@ -12,7 +12,7 @@ const buttonVariants = cva(
     // FR-UI-02: visible focus (solid ring = 3:1+ against the page), active press, disabled.
     "focus-visible:ring-3 focus-visible:ring-ring focus-visible:ring-offset-2 focus-visible:ring-offset-background",
     "active:not-aria-[haspopup]:translate-y-px",
-    "disabled:pointer-events-none disabled:opacity-50 aria-busy:cursor-progress",
+    "disabled:pointer-events-none disabled:opacity-50 aria-busy:cursor-progress aria-disabled:pointer-events-none aria-disabled:opacity-50",
     "aria-invalid:border-destructive aria-invalid:ring-3 aria-invalid:ring-destructive/20 dark:aria-invalid:border-destructive/50 dark:aria-invalid:ring-destructive/40",
     "[&_svg]:pointer-events-none [&_svg]:shrink-0 [&_svg:not([class*='size-'])]:size-4",
   ],
@@ -54,9 +54,25 @@ type ButtonProps = React.ComponentProps<"button"> &
   VariantProps<typeof buttonVariants> & {
     /** Render the single child (e.g. a Next.js `<Link>`) with button styles instead of a `<button>`. */
     asChild?: boolean;
-    /** Shows a spinner, disables the button and marks it busy (FR-AUTH-05: no duplicate submits). */
+    /**
+     * Shows a spinner, marks the button busy and ignores presses (FR-AUTH-05: no
+     * duplicate submits). The button stays focusable, like `focusableWhenDisabled`.
+     */
     loading?: boolean;
+    /**
+     * Keeps a disabled button focusable (`aria-disabled` instead of `disabled`) and
+     * ignores presses. For buttons that can disable themselves while focused, e.g.
+     * "Mark all as read" after it succeeds, so keyboard focus isn't dropped to the
+     * page (WCAG 2.4.3, NFR-UX-02).
+     */
+    focusableWhenDisabled?: boolean;
   };
+
+// A `disabled` button loses focus, so inactive-but-focusable buttons block the
+// click (and, for submit buttons, the form submission it would trigger) instead.
+function preventActivation(event: React.MouseEvent<HTMLButtonElement>) {
+  event.preventDefault();
+}
 
 /**
  * Button with primary, secondary, outline, ghost, destructive and link variants.
@@ -69,7 +85,9 @@ function Button({
   size = "md",
   asChild = false,
   loading = false,
+  focusableWhenDisabled = false,
   disabled,
+  onClick,
   children,
   ...props
 }: ButtonProps) {
@@ -77,11 +95,22 @@ function Button({
 
   if (asChild) {
     return (
-      <Slot.Root data-slot="button" data-variant={variant} className={classes} {...props}>
+      <Slot.Root
+        data-slot="button"
+        data-variant={variant}
+        className={classes}
+        onClick={onClick}
+        {...props}
+      >
         {children}
       </Slot.Root>
     );
   }
+
+  // Loading never uses `disabled`: the focused button (e.g. "Load more" that a
+  // scroll sentinel just triggered) would drop keyboard focus to the page (2.4.3).
+  const isDisabled = disabled === true;
+  const isInactive = loading || (isDisabled && focusableWhenDisabled);
 
   return (
     <button
@@ -89,8 +118,10 @@ function Button({
       data-variant={variant}
       data-size={size}
       className={classes}
-      disabled={disabled === true || loading}
+      disabled={isDisabled && !focusableWhenDisabled}
+      aria-disabled={isInactive || undefined}
       aria-busy={loading || undefined}
+      onClick={isInactive ? preventActivation : onClick}
       {...props}
     >
       <span

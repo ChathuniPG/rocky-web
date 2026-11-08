@@ -26,7 +26,9 @@ const tabsListVariants = cva(
     variants: {
       variant: {
         default: "bg-muted",
-        line: "gap-1 bg-transparent",
+        // Wraps instead of overflowing when labels are long (Sinhala) or the
+        // viewport is narrow, e.g. 320px at 400 % zoom (WCAG 1.4.10).
+        line: "max-w-full flex-wrap gap-1 bg-transparent group-data-horizontal/tabs:h-auto",
       },
     },
     defaultVariants: {
@@ -70,7 +72,12 @@ function TabsContent({ className, ...props }: React.ComponentProps<typeof TabsPr
   return (
     <TabsPrimitive.Content
       data-slot="tabs-content"
-      className={cn("flex-1 text-sm outline-none", className)}
+      // Radix makes a panel without focusable content a tab stop, so it needs a
+      // visible focus indicator like every other stop (WCAG 2.4.7).
+      className={cn(
+        "flex-1 rounded-lg text-sm outline-none focus-visible:ring-3 focus-visible:ring-ring focus-visible:ring-offset-2 focus-visible:ring-offset-background",
+        className,
+      )}
       {...props}
     />
   );

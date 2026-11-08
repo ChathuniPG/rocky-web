@@ -11,14 +11,19 @@ import type { Post } from "@/lib/api/types";
 import { cn } from "@/lib/utils";
 
 /*
- * `sizes` hints for next/image, so it picks a fitting width. The feed's 9:16
- * frame is sized by the viewport height, so it is never wider than about 800px;
- * the post page's media pane takes the space left of the comments panel.
+ * `sizes` hints for next/image, so it picks a fitting width (NFR-PERF-03).
+ * From 768px the feed's 9:16 frame is as tall as the viewport minus the header
+ * and padding (5.5rem), so its width follows the height, not the viewport
+ * width; only portrait screens are limited by the column instead.
+ * The post page's media pane takes the space left of the comments panel; from
+ * 1536px the shell is capped at 1600px, leaving 576px (1600 - 256 sidebar -
+ * 320 right panel - 448 comments panel).
  */
 /** Image `sizes` for the feed's media frame (FR-FEED-10). */
-export const FEED_MEDIA_SIZES = "(min-width: 1536px) 800px, (min-width: 768px) 45vw, 100vw";
+export const FEED_MEDIA_SIZES =
+  "(min-width: 768px) and (orientation: portrait) 70vw, (min-width: 768px) calc((100vh - 5.5rem) * 0.5625), 100vw";
 /** Image `sizes` for the post page's media pane (FR-POST-07). */
-export const POST_PAGE_MEDIA_SIZES = "(min-width: 1024px) 60vw, 100vw";
+export const POST_PAGE_MEDIA_SIZES = "(min-width: 1536px) 576px, (min-width: 1024px) 60vw, 100vw";
 
 type PostMediaProps = {
   post: Pick<Post, "mediaUrl" | "mediaType" | "author">;

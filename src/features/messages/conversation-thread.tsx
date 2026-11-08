@@ -64,8 +64,10 @@ export function ConversationThread({ conversationId }: { conversationId: string 
 
   if (isNotFound) {
     return (
+      // The thread header (with the page's h1) isn't shown here, so this title is the h1.
       <EmptyState
         icon={MessageCircleOffIcon}
+        titleAs="h1"
         title={t("messages.thread.notFoundTitle")}
         description={t("messages.thread.notFoundDescription")}
         action={

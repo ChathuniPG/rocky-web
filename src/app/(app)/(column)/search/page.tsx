@@ -3,6 +3,7 @@ import { Suspense } from "react";
 
 import { PageHeader } from "@/components/page-header";
 import { SearchPageContent, SearchPageSkeleton } from "@/features/search/search-page-content";
+import { DocumentTitle } from "@/i18n/document-title";
 import { getTranslations } from "@/i18n/server";
 import { TranslatedText } from "@/i18n/translated-text";
 
@@ -22,6 +23,7 @@ export const instant = false;
 export default function SearchPage() {
   return (
     <>
+      <DocumentTitle id="pages.search.title" />
       <PageHeader title={<TranslatedText id="pages.search.title" />} />
       <Suspense fallback={<SearchPageSkeleton />}>
         <SearchPageContent />

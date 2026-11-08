@@ -20,6 +20,10 @@ export default function nextConfig(phase: string): NextConfig {
     // `*.dev.tsx` pages (e.g. /dev/components) only exist under `next dev`.
     pageExtensions: isDevServer ? ["dev.tsx", "tsx", "ts"] : ["tsx", "ts"],
     images: {
+      // The default list plus 512, so media drawn ~400–512px wide (feed frames on
+      // laptops, profile tiles on 2x screens) isn't served at 640w (NFR-PERF-03).
+      // All values stay below the smallest deviceSizes entry (640), as the docs require.
+      imageSizes: [32, 48, 64, 96, 128, 256, 384, 512],
       // Only objects in our own bucket may go through the image optimizer, so it
       // can't be used to fetch arbitrary URLs. Object names are URL-encoded
       // ("posts%2F..."), so they are a single segment after /o/. `search` is left

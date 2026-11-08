@@ -13,6 +13,7 @@ import { profileHref } from "@/features/navigation/nav-items";
 import { useTranslations } from "@/i18n/i18n-provider";
 import type { Comment } from "@/lib/api/types";
 
+import { COMMENT_FIELD_ID } from "./comment-form";
 import { useDeleteComment } from "./use-comment-mutations";
 
 /**
@@ -66,6 +67,9 @@ export function CommentItem({ comment, postId }: { comment: Comment; postId: str
             onConfirm={() =>
               deleteComment.mutate(comment.id, { onSuccess: () => setConfirmOpen(false) })
             }
+            // Once deleted, the comment and its button are gone; the comment field is
+            // the natural next place for focus (WCAG 2.4.3).
+            fallbackFocus={() => document.getElementById(COMMENT_FIELD_ID)?.focus()}
           />
         </>
       ) : null}

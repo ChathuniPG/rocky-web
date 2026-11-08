@@ -39,6 +39,8 @@ export function FeedStepControls({
           aria-label={t("feed.previousPost")}
           aria-keyshortcuts="ArrowUp"
           disabled={previousDisabled}
+          // Pressing it can reach the first post and disable it; keep focus on it (2.4.3).
+          focusableWhenDisabled
           onClick={onPrevious}
         >
           <ChevronUpIcon aria-hidden="true" />
@@ -50,6 +52,7 @@ export function FeedStepControls({
           aria-label={t("feed.nextPost")}
           aria-keyshortcuts="ArrowDown"
           disabled={nextDisabled}
+          focusableWhenDisabled
           loading={nextLoading}
           onClick={onNext}
         >
