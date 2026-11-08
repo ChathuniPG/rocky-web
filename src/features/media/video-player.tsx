@@ -185,6 +185,8 @@ export function VideoPlayer({
     <div
       role="group"
       aria-label={label}
+      // Lets the feed leave Up/Down to the player (volume) instead of stepping posts.
+      data-video-player=""
       onKeyDown={handleKeyDown}
       className={cn("absolute inset-0", className)}
     >

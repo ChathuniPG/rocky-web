@@ -19,6 +19,8 @@ import { cn } from "@/lib/utils";
 import { feedHeaderClasses, feedItemClasses } from "./feed-layout";
 import { FeedPost } from "./feed-post";
 import { FeedPostSkeleton } from "./feed-post-skeleton";
+import { FeedStepControls } from "./feed-step-controls";
+import { useFeedStepNavigation } from "./use-feed-step-navigation";
 import { useFeedVideoWindow } from "./use-feed-video-window";
 
 /** Infinite query over GET /posts/feed, newest first (FR-FEED-01, ADR-005). */
@@ -35,8 +37,10 @@ function useFeedQuery() {
 /**
  * The Home feed (FR-FEED-01 to FR-FEED-10): one post per screen with vertical
  * snap scrolling, newest first, more loading as the user nears the end, and a
- * manual refresh. Only videos near the screen get a real player, and the next
- * one is buffered ahead unless the viewer saves data (NFR-PERF-03). A client
+ * manual refresh. From 1024px, Previous/Next buttons (and the Up/Down keys)
+ * step one post at a time instead of a scrollbar. Only videos near the screen
+ * get a real player, and the next one is buffered ahead unless the viewer
+ * saves data (NFR-PERF-03). A client
  * component because it reads the session-scoped feed in the browser (ADR-013)
  * and reacts to scrolling.
  */
@@ -63,6 +67,15 @@ export function HomeFeed() {
       void fetchNextPage({ cancelRefetch: false });
     }
   }, [prefetch, hasNextPage, isFetchingNextPage, isFetchNextPageError, fetchNextPage]);
+
+  const { goPrevious, goNext, ...stepState } = useFeedStepNavigation({
+    listRef,
+    visibleIndex,
+    loadedCount: posts.length,
+    hasNextPage,
+    isFetchNextPageError,
+    fetchNextPage,
+  });
 
   return (
     <>
@@ -114,8 +127,8 @@ export function HomeFeed() {
           />
         </FeedMessage>
       ) : (
-        <section aria-label={t("feed.label")}>
-          {/* Tab moves into the next post and the browser scrolls it into view; Page Down and the arrow keys move one snap point. */}
+        <section aria-label={t("feed.label")} className="relative">
+          {/* Tab moves into the next post and the browser scrolls it into view; Page Down and Space move one snap point, Up/Down step via useFeedStepNavigation. */}
           <ul ref={listRef}>
             {posts.map((post, index) => (
               <li key={post.id} className={feedItemClasses} {...focusPropsFor(index)}>
@@ -135,6 +148,7 @@ export function HomeFeed() {
               endLabel={t("feed.end")}
             />
           </div>
+          <FeedStepControls {...stepState} onPrevious={goPrevious} onNext={goNext} />
         </section>
       )}
     </>
