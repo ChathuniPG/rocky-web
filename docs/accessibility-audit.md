@@ -103,6 +103,7 @@ None.
 - **A11Y-17 withdrawn.** On re-checking, the error was already linked to its control (see the Status column).
 - **A11Y-08 approach:** the tab title is set on the client from the active language, and each page keeps its server `metadata.title` as the English fallback (crawlers, first paint).
 - **Out of scope:** layouts below 768 px (phone layouts), AAA criteria other than A11Y-15, the dev-only Next.js indicator, and the rocky-api login 500 (see Out of scope). The 320 px fixes in A11Y-05 only make sure nothing overflows at 400 % desktop zoom; they aren't a mobile layout.
+- **Later change (issue #46, 2026-11-09):** the placeholder "R" tile was replaced with the R.O.C.K.Y. logo as a decorative image (`alt=""`); the A11Y-13 and A11Y-14 fixes are unchanged and the home link is still named "R.O.C.K.Y.".
 
 ## Checked and passing
 
