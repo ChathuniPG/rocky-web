@@ -9,6 +9,7 @@ import { Badge } from "@/components/ui/badge";
 import { DialogTrigger } from "@/components/ui/dialog";
 import { Tooltip, TooltipContent, TooltipTrigger } from "@/components/ui/tooltip";
 import { useCurrentUser } from "@/features/auth/auth-provider";
+import { useUnreadNotificationCount } from "@/features/notifications/use-unread-notification-count";
 import { CreatePostDialog } from "@/features/posts/create-post-dialog";
 import { useTranslations } from "@/i18n/i18n-provider";
 
@@ -28,22 +29,19 @@ const navEntryClasses = [
 // icon-only entries still have a name.
 const navLabelClasses = "sr-only xl:not-sr-only xl:truncate";
 
-type SidebarProps = {
-  /** Unread notification count for the badge (FR-NOTF-04); wired to the API later. */
-  unreadNotificationCount?: number;
-};
-
 /**
  * Left navigation (design.md 7.2): icons with tooltips below 1280px, icons with
- * labels from 1280px. The nav list sits in Suspense because `usePathname`
- * suspends while prerendering routes with unknown dynamic params under
- * cacheComponents; the fallback is the same list without the active highlight.
- * Rendered inside the AuthGate, so the signed-in user is always known.
+ * labels from 1280px, and the unread notification badge (FR-NOTF-04). The nav
+ * list sits in Suspense because `usePathname` suspends while prerendering
+ * routes with unknown dynamic params under cacheComponents; the fallback is the
+ * same list without the active highlight. Rendered inside the AuthGate, so the
+ * signed-in user is always known.
  */
-export function Sidebar({ unreadNotificationCount = 0 }: SidebarProps) {
+export function Sidebar() {
   const t = useTranslations();
   const { username } = useCurrentUser();
   const navItems = useMemo(() => getNavItems(username), [username]);
+  const unreadNotificationCount = useUnreadNotificationCount().data?.count ?? 0;
 
   return (
     <aside className="sticky top-0 flex h-dvh w-19 shrink-0 flex-col border-r px-3 py-4 xl:w-64">

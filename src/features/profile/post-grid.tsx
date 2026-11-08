@@ -2,16 +2,15 @@
 
 import type { InfiniteData, UseInfiniteQueryResult } from "@tanstack/react-query";
 import { CircleAlertIcon, HeartIcon, PlayIcon } from "lucide-react";
-import Image from "next/image";
 import Link from "next/link";
-import { useState, type ReactNode } from "react";
+import type { ReactNode } from "react";
 
 import { EmptyState } from "@/components/empty-state";
 import { InfiniteListFooter } from "@/components/infinite-list-footer";
 import { Button } from "@/components/ui/button";
 import { Skeleton } from "@/components/ui/skeleton";
+import { PostThumbnail } from "@/features/posts/post-thumbnail";
 import { postHref } from "@/features/posts/share-post";
-import { useInView } from "@/hooks/use-in-view";
 import { useLocale, useTranslations } from "@/i18n/i18n-provider";
 import { mapApiErrorToMessageKey } from "@/lib/api/map-api-error";
 import type { Post, PostPage } from "@/lib/api/types";
@@ -92,8 +91,8 @@ export function PostGrid({ query, label, emptyState }: PostGridProps) {
 }
 
 /**
- * One thumbnail linking to the post page. Images go through next/image; a
- * video shows a still frame (never autoplays, FR-PROF-02) with a play badge.
+ * One thumbnail linking to the post page. A video shows a still frame (never
+ * autoplays, FR-PROF-02) with a play badge.
  * The link's accessible name says what it is, who posted it and its likes; the
  * visible like count is decorative to avoid reading it twice.
  */
@@ -112,18 +111,12 @@ function PostGridTile({ post, eager }: { post: Post; eager: boolean }) {
       })}
       className="group/tile relative block aspect-9/16 overflow-hidden rounded-md bg-muted outline-none focus-visible:ring-3 focus-visible:ring-ring focus-visible:ring-offset-2 focus-visible:ring-offset-background"
     >
-      {isVideo ? (
-        <VideoStill src={post.mediaUrl} />
-      ) : (
-        <Image
-          src={post.mediaUrl}
-          alt=""
-          fill
-          sizes={TILE_SIZES}
-          loading={eager ? "eager" : "lazy"}
-          className="object-cover"
-        />
-      )}
+      <PostThumbnail
+        mediaUrl={post.mediaUrl}
+        mediaType={post.mediaType}
+        sizes={TILE_SIZES}
+        eager={eager}
+      />
       {/* Hover and press feedback on top of the media. */}
       <span
         aria-hidden="true"
@@ -144,38 +137,6 @@ function PostGridTile({ post, eager }: { post: Post; eager: boolean }) {
         {formatCount(post.likeCount, locale)}
       </span>
     </Link>
-  );
-}
-
-/**
- * A video's first frame as a thumbnail. The <video> element is only created
- * once the tile nears the viewport, and then only loads metadata and the first
- * frame (#t=0.1 makes browsers paint it), so a long grid doesn't download
- * every video. It is muted, never plays and is hidden from assistive technology.
- */
-function VideoStill({ src }: { src: string }) {
-  const [isNear, setIsNear] = useState(false);
-  const ref = useInView({
-    onEnter: () => setIsNear(true),
-    rootMargin: "400px 0px",
-    enabled: !isNear,
-  });
-
-  return (
-    <span ref={ref} className="absolute inset-0">
-      {isNear ? (
-        <video
-          src={`${src}#t=0.1`}
-          preload="metadata"
-          muted
-          playsInline
-          disablePictureInPicture
-          tabIndex={-1}
-          aria-hidden="true"
-          className="pointer-events-none size-full object-cover"
-        />
-      ) : null}
-    </span>
   );
 }
 
