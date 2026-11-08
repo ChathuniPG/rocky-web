@@ -9,9 +9,11 @@ import { Badge } from "@/components/ui/badge";
 import { DialogTrigger } from "@/components/ui/dialog";
 import { Tooltip, TooltipContent, TooltipTrigger } from "@/components/ui/tooltip";
 import { useCurrentUser } from "@/features/auth/auth-provider";
+import { useUnreadConversationCount } from "@/features/messages/use-unread-conversation-count";
 import { useUnreadNotificationCount } from "@/features/notifications/use-unread-notification-count";
 import { CreatePostDialog } from "@/features/posts/create-post-dialog";
 import { useTranslations } from "@/i18n/i18n-provider";
+import type { TranslationKey } from "@/i18n/translate";
 
 import { getNavItems, isNavItemActive, type NavItem } from "./nav-items";
 
@@ -29,9 +31,13 @@ const navEntryClasses = [
 // icon-only entries still have a name.
 const navLabelClasses = "sr-only xl:not-sr-only xl:truncate";
 
+/** Unread counts shown as badges on their nav entries. */
+type UnreadCounts = { notifications: number; messages: number };
+
 /**
  * Left navigation (design.md 7.2): icons with tooltips below 1280px, icons with
- * labels from 1280px, and the unread notification badge (FR-NOTF-04). The nav
+ * labels from 1280px, and the unread badges on Notifications (FR-NOTF-04) and
+ * Messages (FR-MSG-06). The nav
  * list sits in Suspense because `usePathname` suspends while prerendering
  * routes with unknown dynamic params under cacheComponents; the fallback is the
  * same list without the active highlight. Rendered inside the AuthGate, so the
@@ -42,6 +48,11 @@ export function Sidebar() {
   const { username } = useCurrentUser();
   const navItems = useMemo(() => getNavItems(username), [username]);
   const unreadNotificationCount = useUnreadNotificationCount().data?.count ?? 0;
+  const unreadConversationCount = useUnreadConversationCount().data?.count ?? 0;
+  const unreadCounts = useMemo<UnreadCounts>(
+    () => ({ notifications: unreadNotificationCount, messages: unreadConversationCount }),
+    [unreadNotificationCount, unreadConversationCount],
+  );
 
   return (
     <aside className="sticky top-0 flex h-dvh w-19 shrink-0 flex-col border-r px-3 py-4 xl:w-64">
@@ -63,18 +74,9 @@ export function Sidebar() {
 
       <nav aria-label={t("nav.mainNavigation")} className="flex-1">
         <Suspense
-          fallback={
-            <NavList
-              items={navItems}
-              pathname={null}
-              unreadNotificationCount={unreadNotificationCount}
-            />
-          }
+          fallback={<NavList items={navItems} pathname={null} unreadCounts={unreadCounts} />}
         >
-          <NavListForCurrentPath
-            items={navItems}
-            unreadNotificationCount={unreadNotificationCount}
-          />
+          <NavListForCurrentPath items={navItems} unreadCounts={unreadCounts} />
         </Suspense>
       </nav>
 
@@ -87,35 +89,29 @@ export function Sidebar() {
 
 function NavListForCurrentPath({
   items,
-  unreadNotificationCount,
+  unreadCounts,
 }: {
   items: readonly NavItem[];
-  unreadNotificationCount: number;
+  unreadCounts: UnreadCounts;
 }) {
   const pathname = usePathname();
-  return (
-    <NavList items={items} pathname={pathname} unreadNotificationCount={unreadNotificationCount} />
-  );
+  return <NavList items={items} pathname={pathname} unreadCounts={unreadCounts} />;
 }
 
 function NavList({
   items,
   pathname,
-  unreadNotificationCount,
+  unreadCounts,
 }: {
   items: readonly NavItem[];
   pathname: string | null;
-  unreadNotificationCount: number;
+  unreadCounts: UnreadCounts;
 }) {
   return (
     <ul className="flex flex-col gap-1">
       {items.map((item) => (
         <li key={item.id}>
-          <NavEntry
-            item={item}
-            pathname={pathname}
-            unreadNotificationCount={unreadNotificationCount}
-          />
+          <NavEntry item={item} pathname={pathname} unreadCounts={unreadCounts} />
         </li>
       ))}
     </ul>
@@ -125,11 +121,11 @@ function NavList({
 function NavEntry({
   item,
   pathname,
-  unreadNotificationCount,
+  unreadCounts,
 }: {
   item: NavItem;
   pathname: string | null;
-  unreadNotificationCount: number;
+  unreadCounts: UnreadCounts;
 }) {
   const t = useTranslations();
   const label = t(item.labelKey);
@@ -149,7 +145,7 @@ function NavEntry({
     );
   }
 
-  const badgeCount = item.id === "notifications" ? unreadNotificationCount : 0;
+  const badge = unreadBadgeFor(item.id, unreadCounts);
 
   return (
     <CollapsedTooltip label={label}>
@@ -160,27 +156,43 @@ function NavEntry({
       >
         <span className="relative">
           <Icon aria-hidden="true" />
-          {badgeCount > 0 ? <UnreadBadge count={badgeCount} /> : null}
+          {badge ? <UnreadBadgeNumber count={badge.count} /> : null}
         </span>
         <span className={navLabelClasses}>{label}</span>
+        {/* After the label, so the link's name reads "Messages, Unread conversations: 3". */}
+        {badge ? (
+          <span className="sr-only">{t(badge.labelKey, { count: badge.count })}</span>
+        ) : null}
       </Link>
     </CollapsedTooltip>
   );
 }
 
-function UnreadBadge({ count }: { count: number }) {
-  const t = useTranslations();
+/** The badge for an entry with unread items, or null when there are none. */
+function unreadBadgeFor(
+  id: NavItem["id"],
+  counts: UnreadCounts,
+): { count: number; labelKey: TranslationKey } | null {
+  if (id === "notifications" && counts.notifications > 0) {
+    return { count: counts.notifications, labelKey: "nav.unreadNotifications" };
+  }
+  if (id === "messages" && counts.messages > 0) {
+    return { count: counts.messages, labelKey: "nav.unreadMessages" };
+  }
+  return null;
+}
+
+// The visible number, so the count isn't conveyed by colour alone; screen
+// readers get the full text from the link's sr-only span instead.
+function UnreadBadgeNumber({ count }: { count: number }) {
   return (
-    <>
-      <Badge
-        variant="highlight"
-        aria-hidden="true"
-        className="absolute -top-1.5 -right-2 h-4.5 min-w-4.5 px-1 text-[0.65rem] ring-2 ring-background"
-      >
-        {count > 99 ? "99+" : count}
-      </Badge>
-      <span className="sr-only">{t("nav.unreadNotifications", { count })}</span>
-    </>
+    <Badge
+      variant="highlight"
+      aria-hidden="true"
+      className="absolute -top-1.5 -right-2 h-4.5 min-w-4.5 px-1 text-[0.65rem] ring-2 ring-background"
+    >
+      {count > 99 ? "99+" : count}
+    </Badge>
   );
 }
 

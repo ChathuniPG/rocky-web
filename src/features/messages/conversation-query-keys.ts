@@ -11,6 +11,8 @@ export const conversationKeys = {
   all: ["conversations"] as const,
   /** The conversation list (GET /conversations), an infinite query. */
   list: () => ["conversations", "list"] as const,
+  /** The unread conversations count behind the navigation badge (GET /conversations/unread-count). */
+  unreadCount: () => ["conversations", "unread-count"] as const,
   /** One conversation with its other participant, for the thread header; null if unknown. */
   summary: (conversationId: string) => ["conversations", "summary", conversationId] as const,
   /** A thread's history (GET /conversations/{id}/messages), an infinite query, newest page first. */

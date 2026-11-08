@@ -1,6 +1,12 @@
 import type { InfiniteData } from "@tanstack/react-query";
 
-import type { Conversation, ConversationPage, Message, MessagePage } from "@/lib/api/types";
+import type {
+  Conversation,
+  ConversationPage,
+  Message,
+  MessagePage,
+  UnreadConversationsCount,
+} from "@/lib/api/types";
 
 /*
  * Pure updates of cached conversations and messages (FR-MSG-01..05). Each
@@ -57,6 +63,27 @@ export function findConversationInPages(
     if (match) return match;
   }
   return undefined;
+}
+
+/** Whether the cached list shows this conversation with unread messages. */
+export function isConversationUnreadInPages(
+  data: ConversationPages,
+  conversationId: string,
+): boolean {
+  const conversation = findConversationInPages(data, conversationId);
+  return conversation !== undefined && conversation.unreadCount > 0;
+}
+
+/**
+ * Lowers the navigation badge's count (FR-MSG-06), never below zero. Returns
+ * the same reference when the count doesn't change.
+ */
+export function decrementUnreadConversationCount(
+  data: UnreadConversationsCount,
+  amount = 1,
+): UnreadConversationsCount {
+  const count = Math.max(0, data.count - amount);
+  return count === data.count ? data : { count };
 }
 
 /** Sets a conversation's unread count to zero after it was read (FR-MSG-05). */

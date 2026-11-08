@@ -5,7 +5,9 @@ import type { Conversation, Message } from "@/lib/api/types";
 import {
   applyLastMessageToPages,
   chronologicalMessages,
+  decrementUnreadConversationCount,
   findConversationInPages,
+  isConversationUnreadInPages,
   markConversationReadInPages,
   mergeNewMessages,
   newestMessageId,
@@ -133,6 +135,32 @@ describe("findConversationInPages and markConversationReadInPages", () => {
     const list = makeList([makeConversation("a")]);
     expect(markConversationReadInPages(list, "a")).toBe(list);
     expect(markConversationReadInPages(list, "missing")).toBe(list);
+  });
+});
+
+describe("isConversationUnreadInPages", () => {
+  it("is true only for a cached conversation with unread messages", () => {
+    const list = makeList(
+      [makeConversation("a", { unreadCount: 2 })],
+      [makeConversation("b"), makeConversation("c", { unreadCount: 1 })],
+    );
+    expect(isConversationUnreadInPages(list, "a")).toBe(true);
+    expect(isConversationUnreadInPages(list, "c")).toBe(true);
+    expect(isConversationUnreadInPages(list, "b")).toBe(false);
+    expect(isConversationUnreadInPages(list, "missing")).toBe(false);
+  });
+});
+
+describe("decrementUnreadConversationCount", () => {
+  it("lowers the count by one or by the given amount", () => {
+    expect(decrementUnreadConversationCount({ count: 3 })).toEqual({ count: 2 });
+    expect(decrementUnreadConversationCount({ count: 3 }, 2)).toEqual({ count: 1 });
+  });
+
+  it("never goes below zero and keeps the reference when nothing changes", () => {
+    const zero = { count: 0 };
+    expect(decrementUnreadConversationCount(zero)).toBe(zero);
+    expect(decrementUnreadConversationCount({ count: 1 }, 5)).toEqual({ count: 0 });
   });
 });
 

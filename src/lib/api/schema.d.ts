@@ -472,6 +472,26 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
+    "/api/v1/conversations/unread-count": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /**
+         * Number of your conversations with unread messages
+         * @description Counts conversations with at least one unread message from the other participant. Several unread messages in one conversation count once.
+         */
+        get: operations["ConversationsController_unreadCount"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
     "/api/v1/conversations": {
         parameters: {
             query?: never;
@@ -903,6 +923,13 @@ export interface components {
              * @example 340
              */
             followerCount: number;
+        };
+        UnreadConversationsCountDto: {
+            /**
+             * @description Conversations with at least one unread message from the other participant. Several unread messages in one conversation count once.
+             * @example 2
+             */
+            count: number;
         };
         ConversationLastMessageDto: {
             /** Format: uuid */
@@ -3034,6 +3061,61 @@ export interface operations {
             };
             /** @description No user has this ID. */
             404: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponseDto"];
+                };
+            };
+            /** @description Rate limit exceeded; see the Retry-After header. */
+            429: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponseDto"];
+                };
+            };
+            /** @description A backing service (Firebase or the database) is unavailable. */
+            503: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponseDto"];
+                };
+            };
+        };
+    };
+    ConversationsController_unreadCount: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["UnreadConversationsCountDto"];
+                };
+            };
+            /** @description Not signed in, or the session is invalid or expired. */
+            401: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponseDto"];
+                };
+            };
+            /** @description The account is disabled. */
+            403: {
                 headers: {
                     [name: string]: unknown;
                 };
