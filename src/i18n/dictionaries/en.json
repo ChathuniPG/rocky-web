@@ -287,6 +287,29 @@
     "deleted": "Comment deleted.",
     "deleteFailed": "Couldn’t delete the comment."
   },
+  "notifications": {
+    "listLabel": "Notifications",
+    "loading": "Loading notifications…",
+    "loadMore": "Load more notifications",
+    "end": "You’re all caught up",
+    "unread": "Unread",
+    "markAllRead": "Mark all as read",
+    "item": {
+      "like": "{name} liked your post",
+      "comment": "{name} commented on your post:",
+      "follow": "{name} started following you"
+    },
+    "empty": {
+      "title": "No notifications yet",
+      "description": "When someone likes or comments on your posts, or follows you, you’ll see it here."
+    },
+    "errorTitle": "We couldn’t load your notifications",
+    "toast": {
+      "markReadFailed": "Couldn’t mark the notification as read.",
+      "markAllReadSuccess": "All notifications marked as read.",
+      "markAllReadFailed": "Couldn’t mark all notifications as read."
+    }
+  },
   "pages": {
     "home": {
       "title": "Home",
