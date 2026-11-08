@@ -1,3 +1,4 @@
+import { BrandLogo } from "@/components/brand-logo";
 import { LanguageMenu } from "@/components/language-menu";
 import { ThemeToggle } from "@/components/theme-toggle";
 import { TranslatedText } from "@/i18n/translated-text";
@@ -17,12 +18,7 @@ export default function AuthLayout({ children }: LayoutProps<"/">) {
           <ThemeToggle />
         </div>
         <p className="flex items-center gap-3 text-2xl font-extrabold tracking-tight">
-          <span
-            aria-hidden="true"
-            className="flex size-10 items-center justify-center rounded-lg bg-primary text-xl font-black text-primary-foreground"
-          >
-            R
-          </span>
+          <BrandLogo size={40} />
           <TranslatedText id="common.appName" />
         </p>
       </header>
