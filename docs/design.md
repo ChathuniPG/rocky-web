@@ -11,6 +11,7 @@
 | 0.7         | 07 Nov 2026 | Chathuni Gunasena | Section 7.2: custom video player with autoplay (FR-FEED-09).      |
 | 0.8         | 08 Nov 2026 | Chathuni Gunasena | Section 7.2: text halo instead of a dark band for text over media; scrolling expanded captions.      |
 | 0.9         | 08 Nov 2026 | Chathuni Gunasena | Added ADR-014 (Full page load when the signed-in user changes); Section 7.3 references it.      |
+| 0.10        | 08 Nov 2026 | Chathuni Gunasena | Section 7.3: language rule, the most recent deliberate choice wins (FR-SET-03).      |
 
 ## 1. Purpose
 
@@ -409,6 +410,8 @@ Figure 5 summarizes the route structure and how authentication controls access.
 - **Theme:** next-themes.
 
 - **Language:** a lightweight custom context with JSON dictionaries (English plus one additional language).
+
+  The device remembers the active language in localStorage, so signed-out pages use it too. The most recent deliberate choice wins: a language picked with the menu on /login or /signup is marked as a pending device choice. After sign-in or sign-up, a pending choice that differs from the account's language is kept and saved to the account (PATCH /users/me, optimistic like Settings); the mark is cleared once the account has it. Without a pending choice the account's language wins, so it follows the user to a new device. A failed save keeps the device language, shows an error toast and is retried on the next page load.
 
 ### 7.4 Visual Design
 
