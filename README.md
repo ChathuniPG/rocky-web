@@ -1,5 +1,7 @@
 # rocky-web
 
+[![CI](https://github.com/ChathuniPG/rocky-web/actions/workflows/ci.yml/badge.svg)](https://github.com/ChathuniPG/rocky-web/actions/workflows/ci.yml)
+
 Frontend of **R.O.C.K.Y.** (Regular Online Content Kernel Yarn), a TikTok-style social media platform. Built with Next.js (App Router), TypeScript, Tailwind CSS and shadcn/ui. The API lives in the separate `rocky-api` repository.
 
 > Placeholder. The full README (setup, architecture, scripts, deployment) follows in #16.

@@ -1,0 +1,78 @@
+# Continuous integration for rocky-web (issue #16, NFR-MNT-02). See docs/ci.md.
+# End-to-end behaviour is verified manually and by the accessibility audit, not here.
+name: CI
+
+on:
+  pull_request:
+  push:
+    branches: [main]
+
+# Least privilege: the job only needs to read the repository.
+permissions:
+  contents: read
+
+# A new push to the same branch or PR cancels the run it supersedes.
+concurrency:
+  group: ci-${{ github.workflow }}-${{ github.head_ref || github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  checks:
+    name: Lint, typecheck, test, build
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    # next.config.ts validates these through parseServerEnv, so `next typegen` and
+    # `next build` fail without them. CI only builds: it never serves images or proxies
+    # /api, so the values are deliberately fake placeholders, not secrets.
+    env:
+      FIREBASE_STORAGE_BUCKET: rocky-ci-placeholder.invalid
+      API_INTERNAL_URL: http://rocky-api.invalid
+    steps:
+      # Actions are pinned to full commit SHAs (supply-chain hardening); the comment is the release.
+      - name: Check out
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          # No step pushes, so the token is not left in .git/config for later steps.
+          persist-credentials: false
+
+      - name: Set up Node.js
+        uses: actions/setup-node@949feb2413d6458794dcd2491c4babbbce0c15c1 # v7.1.0
+        with:
+          node-version-file: .nvmrc
+          cache: npm
+
+      # Next.js CI build caching guide. setup-node already caches ~/.npm, so only
+      # .next/cache is cached here. This runs before `npm ci` and hashes only our own
+      # sources, so hashFiles never walks node_modules.
+      - name: Cache Next.js build cache
+        uses: actions/cache@55cc8345863c7cc4c66a329aec7e433d2d1c52a9 # v6.1.0
+        with:
+          path: ${{ github.workspace }}/.next/cache
+          key: ${{ runner.os }}-nextjs-${{ hashFiles('package-lock.json') }}-${{ hashFiles('src/**', '*.ts', '*.mjs') }}
+          restore-keys: |
+            ${{ runner.os }}-nextjs-${{ hashFiles('package-lock.json') }}-
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Lint
+        run: npm run lint
+
+      - name: Check formatting
+        run: npm run format:check
+
+      # Fails when docs/openapi.json changed but src/lib/api/schema.d.ts was not
+      # regenerated. Fix locally with `npm run generate:api` and commit the result.
+      - name: Check generated API types are current
+        run: |
+          npm run generate:api
+          git diff --exit-code -- src/lib/api/schema.d.ts
+
+      - name: Type check
+        run: npm run typecheck
+
+      - name: Unit tests
+        run: npm test
+
+      - name: Build
+        run: npm run build
