@@ -1,6 +1,6 @@
 "use client";
 
-import { useCallback, useEffect, useId, useRef, type RefObject } from "react";
+import { useCallback, useEffect, useId, useRef, useSyncExternalStore, type RefObject } from "react";
 
 import { videoCoordinator } from "./video-coordinator";
 import { soundPreferenceStore } from "./video-preferences";
@@ -48,7 +48,8 @@ type UseVideoAutoplayOptions = {
  * it is the most visible video (at least 60%), pauses when scrolled away or
  * when the tab is hidden, and follows sound preference changes made on any
  * player. Returns `play`, for the user starting the video by hand, which also
- * pauses any other video.
+ * pauses any other video, and `isActive`: whether this is the video allowed to
+ * play, so the player can buffer it fully (NFR-PERF-03).
  *
  * Next.js keeps visited pages mounted but hidden (React Activity), so all of
  * this lives in one effect: Activity runs its cleanup on hide, which pauses
@@ -57,7 +58,7 @@ type UseVideoAutoplayOptions = {
 export function useVideoAutoplay(
   videoRef: RefObject<HTMLVideoElement | null>,
   { autoplay }: UseVideoAutoplayOptions,
-): { play: () => void } {
+): { play: () => void; isActive: boolean } {
   const id = useId();
   // Read at play time, so toggling reduced motion doesn't re-register the video.
   const autoplayRef = useRef(autoplay);
@@ -114,5 +115,11 @@ export function useVideoAutoplay(
     void startPlayback(video, () => videoCoordinator.activeId() === id);
   }, [videoRef, id]);
 
-  return { play };
+  const isActive = useSyncExternalStore(
+    videoCoordinator.subscribe,
+    () => videoCoordinator.activeId() === id,
+    () => false,
+  );
+
+  return { play, isActive };
 }

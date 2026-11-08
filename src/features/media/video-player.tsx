@@ -8,7 +8,9 @@ import { useTranslations } from "@/i18n/i18n-provider";
 import { cn } from "@/lib/utils";
 
 import { useVideoAutoplay } from "./use-video-autoplay";
+import { useVideoLoading } from "./use-video-loading";
 import { resolvePlayerKey, type PlayerKeyTarget } from "./video-player-keys";
+import type { VideoPreload } from "./video-preload";
 import {
   SEEK_STEP_SECONDS,
   VOLUME_STEP,
@@ -41,6 +43,13 @@ type VideoPlayerProps = {
   overlay?: ReactNode;
   /** Positions the sound control; defaults to the top-left corner. */
   soundControlClassName?: string;
+  /**
+   * How much to buffer while this video isn't the playing one; defaults to
+   * "metadata". The feed passes "auto" for the next video (NFR-PERF-03).
+   */
+  preload?: VideoPreload;
+  /** Told when this becomes, or stops being, the video allowed to play; the feed keeps it mounted meanwhile. */
+  onActiveChange?: (active: boolean) => void;
   className?: string;
 };
 
@@ -57,6 +66,10 @@ type VideoPlayerProps = {
  * focus is inside the player, Space/K, M and the arrow keys are shortcuts;
  * elsewhere, such as the feed's Page Down navigation, keys are untouched.
  *
+ * The playing video always buffers fully (preload="auto"); others fetch only
+ * their metadata unless `preload` asks for more. Unmounting releases the
+ * download (NFR-PERF-03); see useVideoLoading.
+ *
  * Playback, sound and time are read from the element's own events: the
  * element is the source of truth, this component only mirrors it for display.
  */
@@ -65,13 +78,26 @@ export function VideoPlayer({
   label,
   overlay,
   soundControlClassName,
+  preload = "metadata",
+  onActiveChange,
   className,
 }: VideoPlayerProps) {
   const t = useTranslations();
   const shortcutsId = useId();
   const videoRef = useRef<HTMLVideoElement>(null);
   const reducedMotion = usePrefersReducedMotion();
-  const { play } = useVideoAutoplay(videoRef, { autoplay: !reducedMotion });
+  const { play, isActive } = useVideoAutoplay(videoRef, { autoplay: !reducedMotion });
+  const effectivePreload = isActive ? "auto" : preload;
+  useVideoLoading(videoRef, { src, preload: effectivePreload });
+
+  // The latest callback, so a new function every render doesn't re-run the effect below.
+  const onActiveChangeRef = useRef(onActiveChange);
+  useEffect(() => {
+    onActiveChangeRef.current = onActiveChange;
+  }, [onActiveChange]);
+  useEffect(() => {
+    onActiveChangeRef.current?.(isActive);
+  }, [isActive]);
 
   const [paused, setPaused] = useState(true);
   const [muted, setMuted] = useState(true);
@@ -166,7 +192,7 @@ export function VideoPlayer({
       <video
         ref={videoRef}
         src={src}
-        preload="metadata"
+        preload={effectivePreload}
         playsInline
         loop
         muted

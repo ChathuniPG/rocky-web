@@ -2,12 +2,13 @@
 
 import { useInfiniteQuery } from "@tanstack/react-query";
 import { CircleAlertIcon, HouseIcon, RefreshCwIcon } from "lucide-react";
-import type { ReactNode } from "react";
+import { useEffect, useRef, type ReactNode } from "react";
 
 import { EmptyState } from "@/components/empty-state";
 import { InfiniteListFooter } from "@/components/infinite-list-footer";
 import { PageHeader } from "@/components/page-header";
 import { Button } from "@/components/ui/button";
+import { shouldPrefetchNextPage } from "@/features/media/video-preload";
 import { postKeys } from "@/features/posts/post-query-keys";
 import { useFeedScrollSnap } from "@/hooks/use-feed-scroll-snap";
 import { useTranslations } from "@/i18n/i18n-provider";
@@ -18,6 +19,7 @@ import { cn } from "@/lib/utils";
 import { feedHeaderClasses, feedItemClasses } from "./feed-layout";
 import { FeedPost } from "./feed-post";
 import { FeedPostSkeleton } from "./feed-post-skeleton";
+import { useFeedVideoWindow } from "./use-feed-video-window";
 
 /** Infinite query over GET /posts/feed, newest first (FR-FEED-01, ADR-005). */
 function useFeedQuery() {
@@ -33,8 +35,10 @@ function useFeedQuery() {
 /**
  * The Home feed (FR-FEED-01 to FR-FEED-10): one post per screen with vertical
  * snap scrolling, newest first, more loading as the user nears the end, and a
- * manual refresh. A client component because it reads the session-scoped feed
- * in the browser (ADR-013) and reacts to scrolling.
+ * manual refresh. Only videos near the screen get a real player, and the next
+ * one is buffered ahead unless the viewer saves data (NFR-PERF-03). A client
+ * component because it reads the session-scoped feed in the browser (ADR-013)
+ * and reacts to scrolling.
  */
 export function HomeFeed() {
   const t = useTranslations();
@@ -43,6 +47,22 @@ export function HomeFeed() {
   // A background refetch (refresh button, tab focus) – not the first load or the next page.
   const isRefreshing = feed.isRefetching && !feed.isFetchingNextPage;
   useFeedScrollSnap(posts.length > 0);
+  const listRef = useRef<HTMLUListElement>(null);
+  const { visibleIndex, videoPropsFor, focusPropsFor } = useFeedVideoWindow(
+    posts.map((post) => post.mediaType),
+    listRef,
+    feed.data,
+  );
+
+  // Fetch the next page a few posts early so its first videos can be buffered ahead (NFR-PERF-03);
+  // the footer's sentinel stays as the fallback. A failed fetch waits for the footer's retry.
+  const { hasNextPage, isFetchingNextPage, isFetchNextPageError, fetchNextPage } = feed;
+  const prefetch = shouldPrefetchNextPage(visibleIndex, posts.length);
+  useEffect(() => {
+    if (prefetch && hasNextPage && !isFetchingNextPage && !isFetchNextPageError) {
+      void fetchNextPage({ cancelRefetch: false });
+    }
+  }, [prefetch, hasNextPage, isFetchingNextPage, isFetchNextPageError, fetchNextPage]);
 
   return (
     <>
@@ -96,10 +116,10 @@ export function HomeFeed() {
       ) : (
         <section aria-label={t("feed.label")}>
           {/* Tab moves into the next post and the browser scrolls it into view; Page Down and the arrow keys move one snap point. */}
-          <ul>
+          <ul ref={listRef}>
             {posts.map((post, index) => (
-              <li key={post.id} className={feedItemClasses}>
-                <FeedPost post={post} eagerMedia={index === 0} />
+              <li key={post.id} className={feedItemClasses} {...focusPropsFor(index)}>
+                <FeedPost post={post} eagerMedia={index === 0} {...videoPropsFor(index)} />
               </li>
             ))}
           </ul>
