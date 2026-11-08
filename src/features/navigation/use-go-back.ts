@@ -12,15 +12,16 @@ const EDITABLE_SELECTOR = 'input, textarea, select, [contenteditable=""], [conte
 
 /**
  * Returns a function that leaves the current page (FR-POST-07): back to the
- * previous in-app page, which keeps its scroll position, or to Home when the
- * page was opened directly, so the user never leaves the app.
+ * previous in-app page, which keeps its scroll position, or to `fallbackHref`
+ * (Home by default) when the page was opened directly, so the user never
+ * leaves the app.
  */
-export function useGoBack(): () => void {
+export function useGoBack(fallbackHref = "/"): () => void {
   const router = useRouter();
   return useCallback(() => {
     if (canReturnInApp()) router.back();
-    else router.push("/");
-  }, [router]);
+    else router.push(fallbackHref);
+  }, [router, fallbackHref]);
 }
 
 /**

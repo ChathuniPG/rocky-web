@@ -25,7 +25,9 @@
     "captionTooLong": "Captions can be at most {max} characters.",
     "displayNameRequired": "Enter a display name.",
     "displayNameTooLong": "Display names can be at most {max} characters.",
-    "bioTooLong": "Bios can be at most {max} characters."
+    "bioTooLong": "Bios can be at most {max} characters.",
+    "messageRequired": "Write a message first.",
+    "messageTooLong": "Messages can be at most {max} characters."
   },
   "nav": {
     "mainNavigation": "Main navigation",
@@ -308,6 +310,47 @@
       "markReadFailed": "Couldn’t mark the notification as read.",
       "markAllReadSuccess": "All notifications marked as read.",
       "markAllReadFailed": "Couldn’t mark all notifications as read."
+    }
+  },
+  "messages": {
+    "list": {
+      "label": "Conversations",
+      "loading": "Loading conversations…",
+      "loadMore": "Load more conversations",
+      "errorTitle": "We couldn’t load your conversations",
+      "ownPreview": "You: {body}",
+      "noMessages": "No messages yet",
+      "unread": "{count} unread messages",
+      "emptyTitle": "No conversations yet",
+      "emptyDescription": "Find someone and use Message on their profile to start a conversation.",
+      "findPeople": "Find people"
+    },
+    "thread": {
+      "title": "Conversation with {name}",
+      "viewProfile": "View {name}’s profile",
+      "loading": "Loading messages…",
+      "historyLabel": "Messages",
+      "loadOlder": "Load older messages",
+      "errorTitle": "We couldn’t load this conversation",
+      "notFoundTitle": "Conversation not found",
+      "notFoundDescription": "It doesn’t exist, or it isn’t one of your conversations.",
+      "backToMessages": "Back to messages",
+      "emptyTitle": "Say hello",
+      "emptyDescription": "Messages you send appear here.",
+      "newMessages": "New messages",
+      "newMessageFrom": "New message from {name}",
+      "you": "You",
+      "sending": "Sending…",
+      "notSent": "Not sent.",
+      "retry": "Retry",
+      "discard": "Discard",
+      "sendFailed": "Your message wasn’t sent."
+    },
+    "composer": {
+      "label": "Write a message",
+      "placeholder": "Write a message…",
+      "hint": "Enter to send, Shift+Enter for a new line",
+      "send": "Send"
     }
   },
   "pages": {

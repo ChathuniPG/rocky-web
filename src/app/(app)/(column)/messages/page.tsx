@@ -1,7 +1,7 @@
 import type { Metadata } from "next";
 
-import { ComingSoon } from "@/components/coming-soon";
 import { PageHeader } from "@/components/page-header";
+import { ConversationList } from "@/features/messages/conversation-list";
 import { getTranslations } from "@/i18n/server";
 
 const t = getTranslations();
@@ -12,12 +12,12 @@ export const metadata: Metadata = { title: t("pages.messages.title") };
 // Next.js cannot prerender this page to validate instant navigation.
 export const instant = false;
 
-/** Conversation list (FR-MSG-01). Placeholder. */
+/** The conversation list (FR-MSG-01, FR-MSG-05); it loads its data in the browser. */
 export default function MessagesPage() {
   return (
     <>
       <PageHeader title={t("pages.messages.title")} />
-      <ComingSoon />
+      <ConversationList />
     </>
   );
 }
