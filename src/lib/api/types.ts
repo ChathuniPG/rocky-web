@@ -33,6 +33,7 @@ export type Notification = ApiSchemas["NotificationResponseDto"];
 export type NotificationPage = ApiSchemas["NotificationPageDto"];
 export type NotificationType = ApiSchemas["NotificationType"];
 export type UnreadCount = ApiSchemas["UnreadCountDto"];
+export type UnreadConversationsCount = ApiSchemas["UnreadConversationsCountDto"];
 export type Conversation = ApiSchemas["ConversationResponseDto"];
 export type ConversationPage = ApiSchemas["ConversationPageDto"];
 export type Message = ApiSchemas["MessageResponseDto"];

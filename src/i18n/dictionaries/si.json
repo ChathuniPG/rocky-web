@@ -38,7 +38,8 @@
     "messages": "පණිවිඩ",
     "profile": "පැතිකඩ",
     "settings": "සැකසුම්",
-    "unreadNotifications": "නොකියවූ දැනුම්දීම් {count}"
+    "unreadNotifications": "නොකියවූ දැනුම්දීම් {count}",
+    "unreadMessages": "නොකියවූ සංවාද: {count}"
   },
   "theme": {
     "change": "තේමාව වෙනස් කරන්න",

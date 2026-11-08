@@ -1,6 +1,12 @@
 import type { InfiniteData } from "@tanstack/react-query";
 
-import type { Conversation, ConversationPage, Message, MessagePage } from "@/lib/api/types";
+import type {
+  Conversation,
+  ConversationPage,
+  Message,
+  MessagePage,
+  UnreadConversationsCount,
+} from "@/lib/api/types";
 
 /*
  * Pure updates of cached conversations and messages (FR-MSG-01..05). Each
@@ -57,6 +63,48 @@ export function findConversationInPages(
     if (match) return match;
   }
   return undefined;
+}
+
+/** Whether the cached list shows this conversation with unread messages. */
+export function isConversationUnreadInPages(
+  data: ConversationPages,
+  conversationId: string,
+): boolean {
+  const conversation = findConversationInPages(data, conversationId);
+  return conversation !== undefined && conversation.unreadCount > 0;
+}
+
+/**
+ * Lowers the navigation badge's count (FR-MSG-06), never below zero. Returns
+ * the same reference when the count doesn't change.
+ */
+export function decrementUnreadConversationCount(
+  data: UnreadConversationsCount,
+  amount = 1,
+): UnreadConversationsCount {
+  const count = Math.max(0, data.count - amount);
+  return count === data.count ? data : { count };
+}
+
+/**
+ * Keeps `unreadCount` at zero for conversations whose mark-read request is
+ * still running, so a list response the server built before the read landed
+ * can't bring the unread badge back (FR-MSG-05). Returns the same page when
+ * nothing changes.
+ */
+export function withPendingReads(
+  page: ConversationPage,
+  pendingReadIds: ReadonlySet<string>,
+): ConversationPage {
+  if (!page.items.some((item) => item.unreadCount > 0 && pendingReadIds.has(item.id))) {
+    return page;
+  }
+  return {
+    ...page,
+    items: page.items.map((item) =>
+      item.unreadCount > 0 && pendingReadIds.has(item.id) ? { ...item, unreadCount: 0 } : item,
+    ),
+  };
 }
 
 /** Sets a conversation's unread count to zero after it was read (FR-MSG-05). */

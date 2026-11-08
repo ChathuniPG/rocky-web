@@ -12,6 +12,7 @@
 | 0.8         | 08 Nov 2026 | Chathuni Gunasena | Section 7.2: text halo instead of a dark band for text over media; scrolling expanded captions.      |
 | 0.9         | 08 Nov 2026 | Chathuni Gunasena | Added ADR-014 (Full page load when the signed-in user changes); Section 7.3 references it.      |
 | 0.10        | 08 Nov 2026 | Chathuni Gunasena | Section 7.3: language rule, the most recent deliberate choice wins (FR-SET-03).      |
+| 0.11        | 08 Nov 2026 | Chathuni Gunasena | Section 5.2: added GET /conversations/unread-count (FR-MSG-06).      |
 
 ## 1. Purpose
 
@@ -319,6 +320,7 @@ Figure 3 shows the complete schema, including keys and relationship cardinalitie
 | **Method** | **Path**                    | **Description**                                                         |
 |------------|-----------------------------|-------------------------------------------------------------------------|
 | GET        | /conversations              | List conversations with the other user, last message and unread count, latest activity first (paginated). |
+| GET        | /conversations/unread-count | Number of your conversations with at least one unread message from the other user, for the navigation badge (FR-MSG-06). |
 | POST       | /conversations              | Body { recipientId }. Returns the existing conversation (200) or creates one (201). |
 | GET        | /conversations/:id/messages | Messages, newest first (paginated); with `after=<messageId>`, only newer messages, oldest first, for polling (ADR-008). Participants only. |
 | POST       | /conversations/:id/messages | Send a message (1–1,000 characters, trimmed; 30 per minute). Participants only. |

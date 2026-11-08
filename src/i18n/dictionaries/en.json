@@ -38,7 +38,8 @@
     "messages": "Messages",
     "profile": "Profile",
     "settings": "Settings",
-    "unreadNotifications": "{count} unread notifications"
+    "unreadNotifications": "{count} unread notifications",
+    "unreadMessages": "Unread conversations: {count}"
   },
   "theme": {
     "change": "Change theme",
