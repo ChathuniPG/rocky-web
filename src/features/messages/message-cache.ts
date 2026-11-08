@@ -86,6 +86,27 @@ export function decrementUnreadConversationCount(
   return count === data.count ? data : { count };
 }
 
+/**
+ * Keeps `unreadCount` at zero for conversations whose mark-read request is
+ * still running, so a list response the server built before the read landed
+ * can't bring the unread badge back (FR-MSG-05). Returns the same page when
+ * nothing changes.
+ */
+export function withPendingReads(
+  page: ConversationPage,
+  pendingReadIds: ReadonlySet<string>,
+): ConversationPage {
+  if (!page.items.some((item) => item.unreadCount > 0 && pendingReadIds.has(item.id))) {
+    return page;
+  }
+  return {
+    ...page,
+    items: page.items.map((item) =>
+      item.unreadCount > 0 && pendingReadIds.has(item.id) ? { ...item, unreadCount: 0 } : item,
+    ),
+  };
+}
+
 /** Sets a conversation's unread count to zero after it was read (FR-MSG-05). */
 export function markConversationReadInPages(
   data: ConversationPages,

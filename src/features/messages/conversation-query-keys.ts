@@ -21,6 +21,14 @@ export const conversationKeys = {
   poll: (conversationId: string) => ["conversations", "poll", conversationId] as const,
 };
 
+/** Mutation keys for conversations, so running mutations can be found in the mutation cache. */
+export const conversationMutationKeys = {
+  /** Prefix of every mark-read mutation. */
+  markReadAll: ["conversations", "mark-read"] as const,
+  /** Marking one conversation as read (PATCH /conversations/{id}/read). */
+  markRead: (conversationId: string) => ["conversations", "mark-read", conversationId] as const,
+};
+
 /** URL of a conversation thread. */
 export function conversationHref(conversationId: string): string {
   return `/messages/${encodeURIComponent(conversationId)}`;

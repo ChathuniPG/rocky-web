@@ -11,6 +11,7 @@ import {
   markConversationReadInPages,
   mergeNewMessages,
   newestMessageId,
+  withPendingReads,
   type ConversationPages,
   type MessagePages,
 } from "./message-cache";
@@ -161,6 +162,30 @@ describe("decrementUnreadConversationCount", () => {
     const zero = { count: 0 };
     expect(decrementUnreadConversationCount(zero)).toBe(zero);
     expect(decrementUnreadConversationCount({ count: 1 }, 5)).toEqual({ count: 0 });
+  });
+});
+
+describe("withPendingReads", () => {
+  const page = {
+    items: [
+      makeConversation("a", { unreadCount: 3 }),
+      makeConversation("b", { unreadCount: 1 }),
+      makeConversation("c"),
+    ],
+    nextCursor: "next",
+  };
+
+  it("clears the unread count of conversations being marked read and keeps the rest", () => {
+    const result = withPendingReads(page, new Set(["a", "c"]));
+    expect(result.items.map((item) => item.unreadCount)).toEqual([0, 1, 0]);
+    expect(result.nextCursor).toBe("next");
+    expect(result.items[1]).toBe(page.items[1]);
+    expect(page.items[0]?.unreadCount).toBe(3);
+  });
+
+  it("returns the same page when no pending read applies", () => {
+    expect(withPendingReads(page, new Set())).toBe(page);
+    expect(withPendingReads(page, new Set(["c", "missing"]))).toBe(page);
   });
 });
 
