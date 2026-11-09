@@ -20,6 +20,7 @@ import { feedHeaderClasses, feedItemClasses } from "./feed-layout";
 import { FeedPost } from "./feed-post";
 import { FeedPostSkeleton } from "./feed-post-skeleton";
 import { FeedStepControls } from "./feed-step-controls";
+import { useFeedRefresh } from "./use-feed-refresh";
 import { useFeedStepNavigation } from "./use-feed-step-navigation";
 import { useFeedVideoWindow } from "./use-feed-video-window";
 
@@ -37,7 +38,7 @@ function useFeedQuery() {
 /**
  * The Home feed (FR-FEED-01 to FR-FEED-10): one post per screen with vertical
  * snap scrolling, newest first, more loading as the user nears the end, and a
- * manual refresh. From 1024px, Previous/Next buttons (and the Up/Down keys)
+ * manual refresh that returns to the newest post. From 1024px, Previous/Next buttons (and the Up/Down keys)
  * step one post at a time instead of a scrollbar. Only videos near the screen
  * get a real player, and the next one is buffered ahead unless the viewer
  * saves data (NFR-PERF-03). A client
@@ -68,13 +69,20 @@ export function HomeFeed() {
     }
   }, [prefetch, hasNextPage, isFetchingNextPage, isFetchNextPageError, fetchNextPage]);
 
-  const { goPrevious, goNext, ...stepState } = useFeedStepNavigation({
+  const { goPrevious, goNext, goToFirst, ...stepState } = useFeedStepNavigation({
     listRef,
     visibleIndex,
     loadedCount: posts.length,
     hasNextPage,
     isFetchNextPageError,
     fetchNextPage,
+  });
+  // Back to the newest post once the refreshed feed is on screen; the visible-post tracking
+  // re-attaches to the new list and the scroll moves the video window and look-ahead with it.
+  const refresh = useFeedRefresh({
+    data: feed.data,
+    refetch: feed.refetch,
+    onRefreshed: goToFirst,
   });
 
   return (
@@ -90,7 +98,7 @@ export function HomeFeed() {
               aria-label={t("feed.refresh")}
               disabled={feed.isPending}
               aria-busy={isRefreshing || undefined}
-              onClick={() => void feed.refetch()}
+              onClick={refresh}
             >
               <RefreshCwIcon aria-hidden="true" className={cn(isRefreshing && "animate-spin")} />
             </Button>

@@ -57,6 +57,7 @@ type AwaitedStep = { index: number; fromVisibleIndex: number | null };
  * state and handlers, plus the Up/Down arrow keys. Each step scrolls exactly
  * one post, smoothly unless the user prefers reduced motion. Next on the last
  * loaded post fetches the next page and moves once it has rendered.
+ * `goToFirst` scrolls back to the first post the same way (after a refresh).
  *
  * Steps count from the post being scrolled to, so quick presses move one post
  * each even before the visible index catches up. The key listener lives in an
@@ -72,6 +73,7 @@ export function useFeedStepNavigation({
 }: FeedStepNavigationInput): FeedStepState & {
   goPrevious: () => void;
   goNext: () => void;
+  goToFirst: () => void;
 } {
   const prefersReducedMotion = usePrefersReducedMotion();
   const pendingTargetRef = useRef<number | null>(null);
@@ -173,5 +175,10 @@ export function useFeedStepNavigation({
     ...feedStepState({ currentIndex: visibleIndex, loadedCount, hasNextPage, awaitingNext }),
     goPrevious: () => step("previous"),
     goNext: () => step("next"),
+    // After a refresh: a Next press still waiting for a page no longer applies.
+    goToFirst: () => {
+      if (awaited) setAwaited(null);
+      scrollToPost(0);
+    },
   };
 }
